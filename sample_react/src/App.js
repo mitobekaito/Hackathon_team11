@@ -3,7 +3,7 @@ import ToDoList from "./ToDoList";
 import {v4 as uuidv4} from "uuid";
 
 function App() {
-  const [todos, setTodos] = useState([{id: 1, name: "Todo1", completed: false }]);//変数を管理するためのhooks
+  const [todos, setTodos] = useState([]);//変数を管理するためのhooks
 
   const todoNameRef = useRef(); //refの要素を取得
 
@@ -29,7 +29,8 @@ function App() {
       <input type="text" ref = {todoNameRef}/>
       <button onClick={handleAddTodo}>タスクの追加</button>
       <button>完了したタスクの削除</button>
-      <div>残りのタスク:0</div>
+      <div>残りのタスク:{todos.filter((todo) => !todo.completed).length}</div>
+      {/* find関数の逆でfalseのものだけ残す */}
     </div>
   );
 }
