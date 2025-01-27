@@ -9,6 +9,7 @@ function App() {
 
   const handleAddTodo = () => {
     const name = todoNameRef.current.value;
+    if(name === "")return;//空のタスク無効
     setTodos((prevTodos) => {
       return [...prevTodos, {id: uuidv4(), name:name, completed:false}] // ...prevTodosで前のタスクを展開
     });
@@ -21,7 +22,7 @@ function App() {
     todo.completed = !todo.completed;//引数のものと一致したらcheckboxを反転させる
     setTodos(newTodos);//状態を更新
   };
-
+  
   const handleClear = () => {
     const newTodos = todos.filter((todo) => !todo.completed);
     setTodos(newTodos);
