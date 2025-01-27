@@ -22,13 +22,18 @@ function App() {
     setTodos(newTodos);//状態を更新
   };
 
+  const handleClear = () => {
+    const newTodos = todos.filter((todo) => !todo.completed);
+    setTodos(newTodos);
+  }
+
   return (
     <div>
       <ToDoList todos={todos} toggleTodo={toggleTodo}/> 
       {/* propsで値を渡す */}
       <input type="text" ref = {todoNameRef}/>
       <button onClick={handleAddTodo}>タスクの追加</button>
-      <button>完了したタスクの削除</button>
+      <button onClick={handleClear}>完了したタスクの削除</button>
       <div>残りのタスク:{todos.filter((todo) => !todo.completed).length}</div>
       {/* find関数の逆でfalseのものだけ残す */}
     </div>
