@@ -33,7 +33,7 @@ function App() {
       <ToDoList todos={todos} toggleTodo={toggleTodo}/> 
       {/* propsで値を渡す */}
       <input type="text" ref = {todoNameRef}/>
-      <button onClick={handleAddTodo}>タスクの追加</button>
+      <button onClick={handleAddTodo}>タスク</button>
       <button onClick={handleClear}>完了したタスクの削除</button>
       <div>残りのタスク:{todos.filter((todo) => !todo.completed).length}</div>
       {/* find関数の逆でfalseのものだけ残す */}
