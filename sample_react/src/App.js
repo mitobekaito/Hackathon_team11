@@ -15,9 +15,16 @@ function App() {
     todoNameRef.current.value = null;
   };
 
+  const toggleTodo = (id) => {
+    const newTodos = [...todos];//状態変数で管理されているためtodosをcopy
+    const todo = newTodos.find((todo) => todo.id === id);//すべてのidを見てtrueのものをtodoに格納する
+    todo.completed = !todo.completed;//引数のものと一致したらcheckboxを反転させる
+    setTodos(newTodos);//状態を更新
+  };
+
   return (
     <div>
-      <ToDoList todos={todos} /> 
+      <ToDoList todos={todos} toggleTodo={toggleTodo}/> 
       {/* propsで値を渡す */}
       <input type="text" ref = {todoNameRef}/>
       <button onClick={handleAddTodo}>タスクの追加</button>
