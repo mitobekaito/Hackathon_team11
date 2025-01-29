@@ -1,6 +1,8 @@
 import { useState } from "react";
 import SubjectForm from "./SubjectForm";
-import SubjectList from "./SubjectList"; 
+import SubjectList from "./SubjectList";
+import HamburgerMenu from "./HamburgerMenu";
+import "./App.css";
 
 function App() {
   const [subjects, setSubjects] = useState([]);
@@ -11,9 +13,11 @@ function App() {
 
   return (
     <div>
-      <h1>勉強時間管理アプリ</h1>
-      <SubjectForm addSubject={addSubject} />
-      <SubjectList subjects={subjects} />
+      <HamburgerMenu>
+        <h2>勉強時間管理アプリ</h2>
+        <SubjectForm addSubject={addSubject} />
+        <SubjectList subjects={subjects} />
+      </HamburgerMenu>
     </div>
   );
 }

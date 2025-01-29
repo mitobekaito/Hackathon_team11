@@ -1,0 +1,28 @@
+.task-list-container {
+  margin-top: 20px;
+}
+
+.task-list {
+  max-height: 300px; /* 必要に応じて高さを調整 */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.task-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.task-list input,
+.task-list select {
+  margin-right: 10px;
+}
