@@ -17,7 +17,9 @@ function HamburgerMenu({ children }) {
         <button className="close-button" onClick={toggleMenu}>
           &times;
         </button>
-        {children}
+        <div className="menu-content">
+          {children}
+        </div>
       </div>
     </div>
   );
