@@ -22,11 +22,14 @@ function SubjectList({ subjects }) {
     setTasks(newTasks);
   };
 
+  // 日付が近い順にソート
+  const sortedSubjects = [...subjects].sort((a, b) => new Date(a.testDate) - new Date(b.testDate));
+
   return (
     <div>
       <h2>登録された教科</h2>
       <ul>
-        {subjects.map((subject, index) => (
+        {sortedSubjects.map((subject, index) => (
           <li key={index}>
             {subject.name} - {new Date(subject.testDate).toLocaleString()}
             <TaskForm addTask={(task) => addTask(index, task)} />
