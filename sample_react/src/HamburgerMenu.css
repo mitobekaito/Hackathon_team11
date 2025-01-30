@@ -16,7 +16,7 @@
     height: 100%;
     background-color: #333;
     color: white;
-    overflow-x: hidden;
+    overflow: hidden; /* 全体のスクロールを無効にする */
     transition: 0.5s;
     padding-top: 60px;
   }
@@ -34,4 +34,10 @@
     background: none;
     border: none;
     color: white;
+  }
+
+  .menu-content {
+    max-height: calc(100% - 80px); /* 必要に応じて調整 */
+    overflow-y: auto; /* タスク一覧だけをスクロール可能にする */
+    padding: 20px;
   }
