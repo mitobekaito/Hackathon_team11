@@ -1,7 +1,9 @@
 const router = require('express').Router();
+const Task = require('../models/TaskSchema'); //Taskスキーマをインポート
 
-router.get('/', (req, res) => {
-    res.send('tasks router');
+//
+router.get('/', async(req, res) => {
+    
 });
 
 module.exports = router;
