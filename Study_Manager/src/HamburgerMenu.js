@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import "./HamburgerMenu.css";
 
 function HamburgerMenu({ children }) {
@@ -10,7 +10,6 @@ function HamburgerMenu({ children }) {
   };
 
   return (
-    <BrowserRouter>
       <div>
         <button className="hamburger-button" onClick={toggleMenu}>
           &#9776;
@@ -20,11 +19,18 @@ function HamburgerMenu({ children }) {
             &times;
           </button>
           <div className="menu-content">
+          <nav>
+            <ul>
+              <li><Link to="/subjects">勉強</Link></li>
+              <li><Link to="/add-subject">勉強の追加</Link></li>
+              <li><Link to="/tasks">Tasks</Link>タスク</li>
+              <li><Link to="/complete-task">タスクの完了</Link></li>
+            </ul>
+          </nav>
             {children}
           </div>
         </div>
       </div>
-    </BrowserRouter>
   );
 }
 
