@@ -29,7 +29,7 @@ function SubjectForm({ addSubject }) {
           onChange={(e) => setTestDate(e.target.value)}
           required
         />
-        <button type="submit">追加</button>
+        <button className="btn btn-primary" type="submit">追加</button>
       </form>
     </div>
   );
