@@ -3,6 +3,8 @@ const User = require('../models/UserSchema');
 
 //user registration API
 router.post('/register', async (req, res) => {
+    //ユーザー登録時に、usernameとpasswordを受け取り、新規ユーザーを作成  
+    //時間があったらbcryptとかでパスワードを暗号化したい
     try {
         const newUser = await new User({
             username: req.body.username,
