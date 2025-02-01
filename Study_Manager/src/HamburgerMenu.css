@@ -68,9 +68,24 @@
   margin-left: 10px;
 }
 
+/*教科リストの設定*/
 .subject-item {
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 5px;
+  margin-bottom: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 4); /* 影を追加 */
   border-radius: 4px; /* 角を丸める */
+}
+
+/*削除ボタンの設定*/
+.delete-button {
+  background-color: #E74C3C; /* ボタンの背景色を赤に設定 */
+  color: rgb(27, 27, 27); /* ボタンの文字色を白に設定 */
+  border: none; /* ボーダーを削除 */
+  padding: 10px 20px; /* パディングを追加 */
+  border-radius: 4px; /* 角を丸める */
+  cursor: pointer; /* カーソルをポインターに変更 */
+}
+
+.delete-button:hover {
+  background-color: #C0392B; /* ホバー時の背景色を変更 */
 }

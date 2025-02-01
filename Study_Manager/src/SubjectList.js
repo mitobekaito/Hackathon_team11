@@ -42,7 +42,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               <div>
                 {subject.name} - {new Date(subject.date).toLocaleString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
-                <button onClick={() => deleteSubject(subject._id)}>削除</button>
+                <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
             )}
             <TaskForm addTask={addTask} subjectIndex={index} />
