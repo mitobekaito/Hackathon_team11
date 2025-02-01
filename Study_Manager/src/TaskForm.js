@@ -1,13 +1,17 @@
 import { useState } from "react";
 
-function TaskForm({ addTask }) {
+function TaskForm({ addTask, subjectIndex }) {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(1);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!description) return;
-    addTask({ description, priority });
+    if (subjectIndex === undefined) {
+      console.error("subjectIndex is undefined");
+      return;
+    }
+    addTask(subjectIndex, { description, priority });
     setDescription("");
     setPriority(1);
   };
