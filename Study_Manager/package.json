@@ -3,13 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "braces": "^3.0.3",
     "cra-template": "1.2.0",
     "daisyui": "^4.12.23",
     "express": "^4.21.2",
+    "postcss": "^8.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.4",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
+    "resolve-url-loader": "^5.0.0",
+    "svgo": "^3.3.2",
     "uuid": "^11.0.5"
   },
   "scripts": {
@@ -37,6 +41,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "babel-jest": "^29.7.0"
   }
 }
