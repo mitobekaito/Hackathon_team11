@@ -23,6 +23,7 @@ const TaskSchema = new mongoose.Schema({
         //0~5の星評価で理解度を設定したいため、0~5の範囲で設定しました。
         min : 0,
         max : 5,
+        default : 0,
     },
     subjectid:{
         type: mongoose.Schema.Types.ObjectId,
