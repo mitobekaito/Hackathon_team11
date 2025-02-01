@@ -4,7 +4,7 @@ const Task = require('../models/TaskSchema'); //Taskスキーマをインポー�
 router.get('/', async(req, res) => {
   try{
     //Taskスキーマから全てのタスクを取得
-    const tasks = await Task.find();
+    const tasks = await Task.find().populate("subjectId");
     res.status(200).json(tasks);//json形式で返す
   } catch(err){
     res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す
@@ -38,7 +38,8 @@ router.post('/', async(req, res) => {
       });
       //新しいタスクをデータベースに保存
       const savetask = await newtask.save();
-      res.status(201).json(savetask);//タスクをクライアントにjson形式で返す
+      const populatedTask = await savetask.populate("subjectId"); // `populate` を適用
+      res.status(201).json(populatedTask);//タスクをクライアントにjson形式で返す
     } catch(err){
         console.error("タスクの追加に失敗:", err);
         res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す

@@ -5,8 +5,13 @@ function TaskForm({ addTask, subjectId }) {
   const [priority, setPriority] = useState(1);
 
   useEffect(() => {
-    console.log("TaskForm subjectId:", subjectId); // デバッグ用
+    if (!subjectId) {
+      console.error("Error: subjectId is undefined in TaskForm!");
+    } else {
+      console.log("TaskForm received subjectId:", subjectId);
+    }
   }, [subjectId]);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

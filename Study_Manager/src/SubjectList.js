@@ -1,7 +1,5 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import TaskForm from "./TaskForm";
-
-
 
 function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   const [isEditing, setIsEditing] = useState(null);
@@ -10,8 +8,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   useEffect(() => {
     console.log("Updated subjects:", subjects);
   }, [subjects]);
-  
-  
+
   console.log("Subjects in SubjectList:", subjects); // デバッグ用
 
   if (!subjects || subjects.length === 0) {
@@ -66,12 +63,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               </div>
             )}
             {/* `subject._id` を `TaskForm` に正しく渡す */}
-            {subject._id ? (
-              <TaskForm addTask={(task) => addTask(subject._id, task)} subjectId={subject._id} />
-            ) : (
-              <p>Loading TaskForm...</p>
-            )}
-
+            <TaskForm addTask={addTask} subjectId={subject._id} />
           </li>
         ))}
       </ul>
