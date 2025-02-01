@@ -15,7 +15,7 @@ function App() {
   //サーバーから科目を取得
   const fetchSubjects = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/subjects");
+      const res = await axios.get("http://localhost:5000/subjects");
       setSubjects(res.data);//取得したデータを更新
     } catch (err) {
       console.error("科目の取得に失敗：", err);
@@ -25,7 +25,7 @@ function App() {
   //サーバーからすべてのタスクを取得
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/tasks");
+      const res = await axios.get("http://localhost:5000/tasks");
       setTasks(res.data);//取得したデータを更新
     } catch (err) {
       console.error("タスクの取得に失敗：", err);
@@ -43,7 +43,7 @@ function App() {
     try {
       console.log("追加する科目：", subject);//デバック用
 
-      const res = await axios.post("http://localhost:3000/subjects", {
+      const res = await axios.post("http://localhost:5000/subjects", {
         name: subject.name,
         date: subject.date || new Date().toISOString().split('T')[0] //日付がない場合は現在の日付を取得
       });
@@ -57,7 +57,7 @@ function App() {
   const addTask = async (subjectIndex, task) => {
     try {
       const newTask = {...task, subjectId: subjects[subjectIndex]._id};//科目IDを関連付ける
-      const res = await axios.post("http://localhost:3000/tasks", newTask);
+      const res = await axios.post("http://localhost:5000/tasks", newTask);
       setTasks([...tasks, res.data]);//取得したデータを更新
     } catch (err) {
       console.error("タスクの追加に失敗：", err);
@@ -67,7 +67,7 @@ function App() {
   //タスクの更新
   const updateTask = async(taskIndex, updatedTask) => {
     try {
-      await axios.put(`http://localhost:3000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+      await axios.put(`http://localhost:5000/tasks/${tasks[taskIndex]._id}`, updatedTask);
       const newTasks = [...tasks];
       newTasks[taskIndex] = updatedTask;//更新したデータを取得
       setTasks(newTasks);//取得したデータを更新
@@ -79,7 +79,7 @@ function App() {
   //タスクの削除
   const deleteTask = async (taskIndex) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${tasks[taskIndex]._id}`);
+      await axios.delete(`http://localhost:5000/tasks/${tasks[taskIndex]._id}`);
       const newTasks = [...tasks];
       newTasks.splice(taskIndex, 1);//削除したタスクを取得
       setTasks(newTasks);//取得したデータを更新
@@ -92,12 +92,12 @@ function App() {
   const completeTask = async(taskIndex, rating) => {
     try{
       const updatedTask = { ...tasks[taskIndex], completed: true, rating };
-      await axios.put(`http://localhost:3000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+      await axios.put(`http://localhost:5000/tasks/${tasks[taskIndex]._id}`, updatedTask);
 
       //XPを更新
       const subjectId = tasks[taskIndex].subjectId;
       if(subjectId){
-        await axios.put(`http://localhost:3000/subjects/${subjectId}/increase-xp`, { 
+        await axios.put(`http://localhost:5000/subjects/${subjectId}/increase-xp`, { 
           increment: 100 //XPを100増加
         });
       
