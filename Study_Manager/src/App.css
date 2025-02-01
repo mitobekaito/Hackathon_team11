@@ -43,3 +43,10 @@
   display: flex;
   justify-content: center;
 }
+
+/*追加ボタンの設定*/
+.task-submit-button {
+  width: 80px; /* ボタンの幅を指定 */
+  height: 20px; /* ボタンの高さを指定 */
+  font-size: 14px; /* フォントサイズを指定 */
+}

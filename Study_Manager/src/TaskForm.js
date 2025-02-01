@@ -30,7 +30,7 @@ function TaskForm({ addTask, subjectIndex }) {
         <option value={2}>優先度 2</option>
         <option value={3}>優先度 3</option>
       </select>
-      <button type="submit">追加</button>
+      <button type="submit" className="btn btn-primary task-submit-button">追加</button>
     </form>
   );
 }
