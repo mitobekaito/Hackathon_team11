@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import { useState } from "react";
+>>>>>>> mitobekaito
 import TaskForm from "./TaskForm";
 
 function SubjectList({ subjects, addTask }) {

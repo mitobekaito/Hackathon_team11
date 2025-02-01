@@ -1,33 +1,34 @@
 const express = require('express');
 const app = express();
-const userRouter = require('./routes/users');
+const PORT = process.env.PORT || 3000;
+// const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const subjectRouter = require('./routes/subjects');
 const taskRouter = require('./routes/tasks');
-const PORT = 3000;
 const mongoose = require('mongoose');
-
-
+const cors = require('cors');
 require('dotenv').config();
+
+app.use(express.json());//expressでjsonを使う
+app.use(cors());//CORSを許可(フロントエンドとバックエンドの通信を許可)
 
 // Connect to MongoDB
 //.envファイルに記述したURIを読み込む
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
 })
     .then(() =>
         console.log("888888888888888888888888888888")
-    ).catch((err) =>
-        console.log("エラーヨクキキトレマセンデシタ\n",err)
-    );
+    ).catch((err) =>{
+        console.log("エラーヨクキキトレマセンデシタ\n",err);
+        process.exit(1); // 接続に失敗した場合、プロセスを終了
+    });
 
-// Middleware
-app.use(express.json());
+
 
 // Routesの読み込み　try-catchでエラーをキャッチ
 try{
-    app.use('/users', userRouter);
+    // app.use('/users', userRouter); 
     app.use('/auth', authRouter);
     app.use('/subjects', subjectRouter);
     app.use('/tasks', taskRouter);    
