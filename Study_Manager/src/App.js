@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios"; // API通信に必要
-import SubjectForm from "./SubjectForm";
-import SubjectList from "./SubjectList";
 import HamburgerMenu from "./HamburgerMenu";
 import TaskCompletion from "./TaskCompletion";
-import TaskList from "./TaskList";
+import TaskList from "./TaskList"; // TaskList をインポート
 import CalendarMenu from "./CalendarMenu";
 import "./App.css";
 
@@ -117,19 +115,41 @@ function App() {
     }
   };
 
+  //科目の編集
+  const editSubject = (index, updatedSubject) => {
+    const newSubjects = [...subjects];
+    newSubjects[index] = updatedSubject;
+    setSubjects(newSubjects);
+  };
+
+  //科目の削除
+  const deleteSubject = (index) => {
+    const newSubjects = subjects.filter((_, i) => i !== index);
+    setSubjects(newSubjects);
+  };
+
   return (
     <Router>
       <div className="App">
-        <HamburgerMenu />
+        <HamburgerMenu
+          subjects={subjects}
+          setSubjects={setSubjects}
+          addSubject={addSubject}
+          editSubject={editSubject}
+          deleteSubject={deleteSubject}
+          tasks={tasks}
+          addTask={addTask}
+          updateTask={updateTask}
+          deleteTask={deleteTask}
+          completeTask={completeTask}
+        />
         <h2>勉強時間管理アプリ</h2>
-        <SubjectForm addSubject={addSubject} />
-        <SubjectList subjects={subjects} addTask={addTask} />
         <TaskList
           tasks={tasks}
           updateTask={updateTask}
           deleteTask={deleteTask}
           completeTask={completeTask}
-          isMainView={false}
+          isMainView={true}
         />
         <Link to="/task-completion">タスク消化画面へ</Link>
         <CalendarMenu />
