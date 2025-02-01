@@ -189,7 +189,7 @@ function App() {
           deleteTask={deleteTask}
           completeTask={completeTask}
         />
-        <h2>勉強時間管理アプリ</h2>
+        <h2 className="app-title">Study Manager</h2>
         
         {/* タスク一覧 */}
         {/* TaskList を TaskCompletion に変更 */}
