@@ -43,7 +43,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
       <h2>登録された教科</h2>
       <ul>
         {subjects.map((subject, index) => (
-          <li key={subject._id}>
+          <li key={subject._id} className="subject-item">
             {isEditing === index ? (
               <div>
                 <input
@@ -51,16 +51,19 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
                   value={editedSubject.name}
                   onChange={(e) => setEditedSubject({ ...editedSubject, name: e.target.value })}
                 />
-                <input
-                  type="datetime-local"
-                  value={new Date(editedSubject.date).toISOString().slice(0, 16)}
-                  onChange={(e) => setEditedSubject({ ...editedSubject, date: e.target.value })}
-                />
+                <select
+                  value={editedSubject.priority}
+                  onChange={(e) => setEditedSubject({ ...editedSubject, priority: Number(e.target.value) })}
+                >
+                  <option value={1}>優先度 1</option>
+                  <option value={2}>優先度 2</option>
+                  <option value={3}>優先度 3</option>
+                </select>
                 <button onClick={() => handleSaveClick(index)}>保存</button>
               </div>
             ) : (
               <div>
-                {subject.name} - {new Date(subject.testDate).toLocaleDateString()}
+                {subject.name} - 優先度 {subject.priority}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
@@ -71,7 +74,6 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
             ) : (
               <p>Loading TaskForm...</p>
             )}
-
           </li>
         ))}
       </ul>

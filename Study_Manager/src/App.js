@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // 'Link' を削除
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios"; // API通信に必要
 import HamburgerMenu from "./HamburgerMenu";
 import TaskCompletion from "./TaskCompletion";
@@ -63,16 +63,16 @@ function App() {
   };
 
   //タスクの追加
-  const addTask = async (subjectId, task) => {
+  const addTask = async (subjectIndex, task) => {
     try {
-      if (!subjectId) {
-        console.error("エラー: subjectId が未定義");
+      if (!subjects[subjectIndex]) {
+        console.error("Invalid subjectIndex:", subjectIndex);
         return;
       }
-      console.log("追加するタスク:", { subjectId, ...task }); // デバッグ用
-      const newTask = { ...task, subjectId };//科目IDを関連付ける
+      const newTask = { ...task, subjectId: subjects[subjectIndex]._id };//科目IDを関連付ける
+      console.log("追加するタスク：", newTask); // 追加するタスクをログに出力
       const res = await axios.post("http://localhost:4000/tasks", newTask);
-      setTasks((prev) => [...prev, res.data]);//取得したデータを更新
+      setTasks([...tasks, res.data]);//取得したデータを更新
     } catch (err) {
       console.error("タスクの追加に失敗：", err);
     }
@@ -81,31 +81,52 @@ function App() {
   //タスクの更新
   const updateTask = async (taskIndex, updatedTask) => {
     try {
-      const taskId = tasks[taskIndex]?._id;
-      if (!taskId) {
-        console.error("エラー: タスクIDが取得できません");
-        return;
-      }
-      const res = await axios.put(`http://localhost:4000/tasks/${taskId}`, updatedTask);
-      setTasks((prev) => prev.map((task, index) => (index === taskIndex ? res.data : task)));
+      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+      const newTasks = [...tasks];
+      newTasks[taskIndex] = updatedTask;//更新したデータを取得
+      setTasks(newTasks);//取得したデータを更新
     } catch (err) {
-      console.error("タスクの更新に失敗:", err.message);
+      console.error("タスクの更新に失敗：", err);
     }
   };
-  
 
   //タスクの削除
   const deleteTask = async (taskIndex) => {
     try {
-      const taskId = tasks[taskIndex]?._id;
-      if (!taskId) {
-        console.error("エラー: タスクIDが取得できません");
-        return;
-      }
-      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
-      setTasks((prev) => prev.filter((_, index) => index !== taskIndex));
+      await axios.delete(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`);
+      const newTasks = [...tasks];
+      newTasks.splice(taskIndex, 1);//削除したタスクを取得
+      setTasks(newTasks);//取得したデータを更新
     } catch (err) {
-      console.error("タスクの削除に失敗:", err.message);
+      console.error("タスクの削除に失敗：", err);
+    }
+  };
+
+  //タスクの完了
+  const completeTask = async (taskIndex, rating) => {
+    try {
+      const updatedTask = { ...tasks[taskIndex], completed: true, rating };
+      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+
+      //XPを更新
+      const subjectId = tasks[taskIndex].subjectId;
+      if (subjectId) {
+        await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+          increment: 100 //XPを100増加
+        });
+
+        //フロント側でもXP更新
+        setSubjects(subjects.map((subject) =>
+          //XPを更新した科目のみXPを増加
+          subject._id === subjectId ? { ...subject, XP: subject.XP + 100 } : subject
+        ));
+      }
+
+      const newTasks = [...tasks];
+      newTasks[taskIndex] = updatedTask;//完了したタスクを取得
+      setTasks(newTasks);//取得したデータを更新
+    } catch (err) {
+      console.error("タスクの完了に失敗：", err);
     }
   };
 
@@ -118,7 +139,7 @@ function App() {
       );
       setSubjects(newSubjects);
     } catch (err) {
-      console.error("科目の編集に失敗:", err.message);
+      console.error("科目の編集に失敗：", err);
     }
   };
 
@@ -129,54 +150,13 @@ function App() {
       const newSubjects = subjects.filter(subject => subject._id !== subjectId);
       setSubjects(newSubjects);
     } catch (err) {
-      console.error("科目の削除に失敗:", err.message);
+      console.error("科目の削除に失敗：", err);
     }
   };
-
-    //タスクの完了
-    const completeTask = async (taskIndex, rating) => {
-      try {
-        const task = tasks[taskIndex];
-        if (!task) {
-          console.error("エラー: タスクが取得できません");
-          return;
-        }
-    
-        const xpIncrement = (task.understanding || 0) * task.priority * 4;
-    
-        const updatedTask = { ...task, completed: true, rating };
-        await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
-        
-        // XPを更新
-        const subjectId = task.subjectId;
-        if (subjectId) {
-          await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
-            increment: xpIncrement,
-          });
-    
-          // フロントエンドの状態を更新
-          setXP((prevXP) => ({
-            ...prevXP,
-            [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
-          }));
-        }
-    
-        setTasks((prev) => prev.map((t, index) => (index === taskIndex ? updatedTask : t)));
-      } catch (err) {
-        console.error("タスクの完了に失敗:", err.message);
-      }
-    };
-  
-    console.log("Subjects:", subjects);
-    console.log("XP:", xp);
 
   return (
     <Router>
       <div className="App">
-      {(!subjects || subjects.length === 0) ? (
-        <p>Loading subjects...</p>
-      ) : (
-        <>
         <HamburgerMenu
           subjects={subjects}
           setSubjects={setSubjects}
@@ -190,20 +170,16 @@ function App() {
           completeTask={completeTask}
         />
         <h2 className="app-title">Study Manager</h2>
-        
-        {/* タスク一覧 */}
-        {/* TaskList を TaskCompletion に変更 */}
-        <Routes>
-          <Route
-            path="/task-completion"
-            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
-          />
-          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
-        </Routes>
-
+        <TaskList
+          tasks={tasks}
+          updateTask={updateTask}
+          deleteTask={deleteTask}
+          completeTask={completeTask}
+          isMainView={true}
+        />
         <CalendarMenu />
-         {/* レベル表示（横スクロール対応） */}
-         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
+        {/* レベル表示（横スクロール対応） */}
+        <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
             <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
               <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
@@ -229,8 +205,6 @@ function App() {
           />
           <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
         </Routes>
-        </>
-      )}
       </div>
     </Router>
   );

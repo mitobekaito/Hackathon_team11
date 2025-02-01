@@ -72,7 +72,7 @@
 .subject-item {
   padding: 5px;
   margin-bottom: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 4); /* 影を追加 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 3); /* 影を追加 */
   border-radius: 4px; /* 角を丸める */
 }
 
