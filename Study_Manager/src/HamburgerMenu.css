@@ -11,8 +11,8 @@
 .menu {
   position: fixed;
   top: 0;
-  left: -500px; 
-  width: 500px; 
+  left: -700px; 
+  width: 700px; 
   height: 100%;
   background-color: #333;
   color: white;
@@ -38,6 +38,36 @@
 
 .menu-content {
   max-height: calc(100% - 80px); /* 必要に応じて調整 */
-  overflow-y: auto; /* タスク一覧だけをスクロール可能にする */
+  overflow-y: auto;
   padding: 20px;
+}
+
+.task-list {
+  max-height: 200px; /* タスクリストの高さを制限 */
+  overflow-y: auto; /* スクロール可能にする */
+}
+
+.task-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.task-name {
+  flex: 2;
+}
+
+.task-priority {
+  flex: 1;
+  text-align: center;
+}
+
+.task-item button {
+  margin-left: 10px;
 }
