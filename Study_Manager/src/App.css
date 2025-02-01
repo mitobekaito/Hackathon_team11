@@ -22,3 +22,7 @@
 .task-item button {
   margin-left: 10px;
 }
+
+.App {
+  margin-top: 70px; /* 画面全体を50px下に下げる */
+}
