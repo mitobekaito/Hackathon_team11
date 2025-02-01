@@ -3,10 +3,10 @@ import TaskForm from "./TaskForm";
 
 function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   const [isEditing, setIsEditing] = useState(null);
-  const [editedSubject, setEditedSubject] = useState({ name: "", testDate: "" });
+  const [editedSubject, setEditedSubject] = useState({ name: "", date: "" });
 
   // 日付が近い順にソート
-  const sortedSubjects = [...subjects].sort((a, b) => new Date(a.testDate) - new Date(b.testDate));
+  const sortedSubjects = [...subjects].sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const handleEditClick = (index) => {
     setIsEditing(index);
@@ -32,15 +32,15 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
                   onChange={(e) => setEditedSubject({ ...editedSubject, name: e.target.value })}
                 />
                 <input
-                  type="date"
-                  value={editedSubject.testDate}
-                  onChange={(e) => setEditedSubject({ ...editedSubject, testDate: e.target.value })}
+                  type="datetime-local"
+                  value={new Date(editedSubject.date).toISOString().slice(0, 16)}
+                  onChange={(e) => setEditedSubject({ ...editedSubject, date: e.target.value })}
                 />
                 <button onClick={() => handleSaveClick(index)}>保存</button>
               </div>
             ) : (
               <div>
-                {subject.name} - {new Date(subject.testDate).toLocaleString()}
+                {subject.name} - {new Date(subject.date).toLocaleString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>

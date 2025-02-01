@@ -7,7 +7,8 @@ function SubjectForm({ addSubject }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !testDate) return;
-    addSubject({ name, testDate });
+    const formattedDate = new Date(testDate); // 日付をDateオブジェクトに変換
+    addSubject({ name, date: formattedDate });
     setName("");
     setTestDate("");
   };
