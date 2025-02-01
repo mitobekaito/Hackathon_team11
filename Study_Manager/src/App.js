@@ -60,8 +60,8 @@ function App() {
 
   const addTask = async (subjectId, task) => {
     try {
-      if (!subjectId) {
-        console.error("エラー: subjectId が未定義");
+      if (!subjects[subjectIndex]) {
+        console.error("Invalid subjectIndex:", subjectIndex);
         return;
       }
       console.log("追加するタスク:", { subjectId, ...task });
@@ -75,13 +75,10 @@ function App() {
 
   const updateTask = async (taskIndex, updatedTask) => {
     try {
-      const taskId = tasks[taskIndex]?._id;
-      if (!taskId) {
-        console.error("エラー: タスクIDが取得できません");
-        return;
-      }
-      const res = await axios.put(`http://localhost:4000/tasks/${taskId}`, updatedTask);
-      setTasks((prev) => prev.map((task, index) => (index === taskIndex ? res.data : task)));
+      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+      const newTasks = [...tasks];
+      newTasks[taskIndex] = updatedTask;//更新したデータを取得
+      setTasks(newTasks);//取得したデータを更新
     } catch (err) {
       console.error("タスクの更新に失敗：", err.message);
     }
@@ -89,13 +86,10 @@ function App() {
 
   const deleteTask = async (taskIndex) => {
     try {
-      const taskId = tasks[taskIndex]?._id;
-      if (!taskId) {
-        console.error("エラー: タスクIDが取得できません");
-        return;
-      }
-      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
-      setTasks((prev) => prev.filter((_, index) => index !== taskIndex));
+      await axios.delete(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`);
+      const newTasks = [...tasks];
+      newTasks.splice(taskIndex, 1);//削除したタスクを取得
+      setTasks(newTasks);//取得したデータを更新
     } catch (err) {
       console.error("タスクの削除に失敗：", err.message);
     }

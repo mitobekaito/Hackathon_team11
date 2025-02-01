@@ -1,8 +1,5 @@
 .hamburger-button-right {
   font-size: 30px;
-  cursor: pointer;
-  background: none;
-  border: none;
   position: fixed;
   top: 20px;
   right: 20px;
@@ -37,6 +34,21 @@
 
 .menu-content-right {
   padding: 20px;
+}
+
+.subjects {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subject {
+  background-color: #ffeb3b;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 12px;
+  text-align: center;
+  margin: 2px 0;
 }
 
 /* 土曜日だけ青色にする */

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; // カレンダーのcss
+import 'react-calendar/dist/Calendar.css';
 import "./CalendarMenu.css";
 
 const CalendarMenu = ({ subjects }) => {
@@ -11,13 +11,21 @@ const CalendarMenu = ({ subjects }) => {
         setIsOpen(!isOpen);
     };
 
-    const tileContent = ({ date, view }) => { // tileContent関数を追加
-        if (view === 'month') {
-            const subject = subjects.find(subject =>
+    //カレンダーの日付に科目名を表示するreact-calendarの関数
+    const tileContent = ({ date, view }) => {
+        if (view === 'month' && Array.isArray(subjects)) { // subjectsが配列かどうかをチェック
+            const subjectsForTheDay = subjects.filter(subject =>
                 new Date(subject.date).toDateString() === date.toDateString()
+            ).slice(0, 4); // 最大4つの教科を取得
+            return (
+                <div className="subjects">
+                    {subjectsForTheDay.map((subject, index) => (
+                        <div key={index} className="subject">{subject.name}</div>
+                    ))}
+                </div>
             );
-            return subject ? <div className="subject">{subject.name}</div> : null;
         }
+        return null; // subjectsがない場合は何も表示しない
     };
 
     return (
@@ -31,7 +39,7 @@ const CalendarMenu = ({ subjects }) => {
                 </button>
                 <div className="menu-content-right">
                     <h3>カレンダー</h3>
-                    <Calendar value={value} onClickDay={(e) => setValue(e)} />
+                    <Calendar value={value} onClickDay={(e) => setValue(e)} tileContent={tileContent} />
                     <div>{value ? value.toString() : "日付を選択してください"}</div>
                 </div>
             </div>
