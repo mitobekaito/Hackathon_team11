@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // 'Link' を削除
 import axios from "axios"; // API通信に必要
 import HamburgerMenu from "./HamburgerMenu";
+import SubjectForm from './SubjectForm';
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList"; // TaskList をインポート
 import CalendarMenu from "./CalendarMenu";
@@ -92,7 +93,7 @@ function App() {
       console.error("タスクの更新に失敗:", err.message);
     }
   };
-  
+
 
   //タスクの削除
   const deleteTask = async (taskIndex) => {
@@ -133,104 +134,106 @@ function App() {
     }
   };
 
-    //タスクの完了
-    const completeTask = async (taskIndex, rating) => {
-      try {
-        const task = tasks[taskIndex];
-        if (!task) {
-          console.error("エラー: タスクが取得できません");
-          return;
-        }
-    
-        const xpIncrement = (task.understanding || 0) * task.priority * 4;
-    
-        const updatedTask = { ...task, completed: true, rating };
-        await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
-        
-        // XPを更新
-        const subjectId = task.subjectId;
-        if (subjectId) {
-          await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
-            increment: xpIncrement,
-          });
-    
-          // フロントエンドの状態を更新
-          setXP((prevXP) => ({
-            ...prevXP,
-            [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
-          }));
-        }
-    
-        setTasks((prev) => prev.map((t, index) => (index === taskIndex ? updatedTask : t)));
-      } catch (err) {
-        console.error("タスクの完了に失敗:", err.message);
+  //タスクの完了
+  const completeTask = async (taskIndex, rating) => {
+    try {
+      const task = tasks[taskIndex];
+      if (!task) {
+        console.error("エラー: タスクが取得できません");
+        return;
       }
-    };
-  
-    console.log("Subjects:", subjects);
-    console.log("XP:", xp);
+
+      const xpIncrement = (task.understanding || 0) * task.priority * 4;
+
+      const updatedTask = { ...task, completed: true, rating };
+      await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
+
+      // XPを更新
+      const subjectId = task.subjectId;
+      if (subjectId) {
+        await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+          increment: xpIncrement,
+        });
+
+        // フロントエンドの状態を更新
+        setXP((prevXP) => ({
+          ...prevXP,
+          [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
+        }));
+      }
+
+      setTasks((prev) => prev.map((t, index) => (index === taskIndex ? updatedTask : t)));
+    } catch (err) {
+      console.error("タスクの完了に失敗:", err.message);
+    }
+  };
+
+  console.log("Subjects:", subjects);
+  console.log("XP:", xp);
 
   return (
     <Router>
       <div className="App">
-      {(!subjects || subjects.length === 0) ? (
-        <p>Loading subjects...</p>
-      ) : (
-        <>
-        <HamburgerMenu
-          subjects={subjects}
-          setSubjects={setSubjects}
-          addSubject={addSubject}
-          editSubject={editSubject}
-          deleteSubject={deleteSubject}
-          tasks={tasks}
-          addTask={addTask}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-          completeTask={completeTask}
-        />
-        <h2 className="app-title">Study Manager</h2>
-        
-        {/* タスク一覧 */}
-        {/* TaskList を TaskCompletion に変更 */}
-        <Routes>
-          <Route
-            path="/task-completion"
-            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
-          />
-          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
-        </Routes>
+        {(!subjects || subjects.length === 0) ? (
+          <p>Loading subjects...</p>
+        ) : (
+          <>
+            <HamburgerMenu
+              subjects={subjects}
+              setSubjects={setSubjects}
+              addSubject={addSubject}
+              editSubject={editSubject}
+              deleteSubject={deleteSubject}
+              tasks={tasks}
+              addTask={addTask}
+              updateTask={updateTask}
+              deleteTask={deleteTask}
+              completeTask={completeTask}
+            />
+            <h2 className="app-title">Study Manager</h2>
 
-        <CalendarMenu />
-         {/* レベル表示（横スクロール対応） */}
-         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
-          {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
-            <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
-              <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
+            {/* タスク一覧 */}
+            {/* TaskList を TaskCompletion に変更 */}
+            <Routes>
+              <Route
+                path="/task-completion"
+                element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
+              />
+              <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
+            </Routes>
+
+            {/* カレンダー */}
+            <CalendarMenu subjects={subjects} />
+
+            {/* レベル表示（横スクロール対応） */}
+            <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
+              {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
+                <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
+                  <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* もっと見る/隠す ボタン */}
-        {subjects.length > 3 && (
-          <div className="show-more-button-container">
-            <button 
-              onClick={() => setShowAll(!showAll)} 
-              className="btn btn-primary">
-              {showAll ? "隠す" : "もっと見る"}
-            </button>
-          </div>
+            {/* もっと見る/隠す ボタン */}
+            {subjects.length > 3 && (
+              <div className="show-more-button-container">
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="btn btn-primary">
+                  {showAll ? "隠す" : "もっと見る"}
+                </button>
+              </div>
+            )}
+
+            <Routes>
+              <Route
+                path="/task-completion"
+                element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
+              />
+              <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
+            </Routes>
+          </>
         )}
-
-        <Routes>
-          <Route
-            path="/task-completion"
-            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
-          />
-          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
-        </Routes>
-        </>
-      )}
       </div>
     </Router>
   );
