@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 // const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const subjectRouter = require('./routes/subjects');
@@ -19,19 +19,19 @@ mongoose.connect(process.env.MONGO_URI, {
 })
     .then(() =>
         console.log("888888888888888888888888888888")
-    ).catch((err) =>{
-        console.log("エラーヨクキキトレマセンデシタ\n",err);
+    ).catch((err) => {
+        console.log("エラーヨクキキトレマセンデシタ\n", err);
         process.exit(1); // 接続に失敗した場合、プロセスを終了
     });
 
 
 
 // Routesの読み込み　try-catchでエラーをキャッチ
-try{
+try {
     // app.use('/users', userRouter); 
     app.use('/auth', authRouter);
     app.use('/subjects', subjectRouter);
-    app.use('/tasks', taskRouter);    
+    app.use('/tasks', taskRouter);
 } catch (err) {
     console.log("ルートの読み込みエラー", err.message);
 }

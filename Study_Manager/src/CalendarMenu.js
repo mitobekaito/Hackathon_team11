@@ -1,5 +1,3 @@
-//カレンダーコンポーネント
-
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // カレンダーのcss
@@ -18,8 +16,8 @@ const CalendarMenu = () => {
             <button className="hamburger-button-right" onClick={toggleMenu}>
                 &#9776;
             </button>
-            <div className={`menu-right ${isOpen ? "open" : ""}`}>
-                <button className="close-button" onClick={toggleMenu}>
+            <div className={`menu-right ${isOpen ? "open-menu-right" : ""}`}>
+                <button className="close-button-right" onClick={toggleMenu}>
                     &times;
                 </button>
                 <div className="menu-content-right">
