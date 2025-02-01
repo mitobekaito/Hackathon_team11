@@ -3,12 +3,21 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // カレンダーのcss
 import "./CalendarMenu.css";
 
-const CalendarMenu = () => {
+const CalendarMenu = ({ subjects }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [value, setValue] = useState();
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+    };
+
+    const tileContent = ({ date, view }) => { // tileContent関数を追加
+        if (view === 'month') {
+            const subject = subjects.find(subject =>
+                new Date(subject.date).toDateString() === date.toDateString()
+            );
+            return subject ? <div className="subject">{subject.name}</div> : null;
+        }
     };
 
     return (

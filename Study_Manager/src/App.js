@@ -132,7 +132,7 @@ function App() {
           isMainView={false}
         />
         <Link to="/task-completion">タスク消化画面へ</Link>
-        <CalendarMenu />
+        <CalendarMenu subjects={subjects} />
         <Routes>
           <Route
             path="/task-completion"
