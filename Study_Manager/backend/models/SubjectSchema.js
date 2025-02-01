@@ -13,6 +13,7 @@ const SubjectSchema = new mongoose.Schema({
     XP:{
         type: Number,
         required: true,
+        default: 0,//デフォルト値
     },
  }, { collection: 'subject' }); //コレクション名を明示
 
