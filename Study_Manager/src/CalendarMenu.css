@@ -1,0 +1,99 @@
+/* カレンダーを格納するハンバーガーメニューのCSS */
+.hamburger-button-right {
+  font-size: 30px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.menu-right {
+  position: fixed;
+  top: 0;
+  right: 700px;
+  width: 700px;
+  height: 100%;
+  background-color: #333;
+  color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.menu.open {
+  left: 0;
+}
+
+/* ここまで作業した */
+.menu .close-button {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 36px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.menu-content-right {
+  max-height: calc(100% - 80px);
+  /* 必要に応じて調整 */
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* カレンダーのCSS */
+.menu {
+  position: fixed;
+  top: 0;
+  right: 250px;
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  color: white;
+  overflow: hidden;
+  /* 全体のスクロールを無効にする */
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.menu.open {
+  left: 0;
+}
+
+.menu .close-button {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 36px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.menu-content {
+  max-height: calc(100% - 80px);
+  /* 必要に応じて調整 */
+  overflow-y: auto;
+  /* タスク一覧だけをスクロール可能にする */
+  padding: 20px;
+}
+
+/* 土曜日だけ青色にする */
+.react-calendar .react-calendar__month-view__days__day--weekend:nth-child(7n-1) {
+  color: #00F;
+}
+
+/* active時の文字の色（選択後の日付の色） */
+.react-calendar__tile--active {
+  color: white !important;
+}
+
+/* 土曜を全部青色にしても今月以外は灰色にする */
+.react-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  color: #757575 !important;
+}
