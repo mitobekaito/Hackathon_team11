@@ -63,7 +63,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               </div>
             ) : (
               <div>
-                {subject.name} - 優先度 {subject.priority}
+                {subject.name} - {new Date(subject.date).toLocaleString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
