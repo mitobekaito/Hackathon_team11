@@ -22,8 +22,6 @@ function HamburgerMenu({ subjects, setSubjects, addSubject, editSubject, deleteS
         <div className="menu-content">
           <SubjectForm addSubject={addSubject} />
           <SubjectList subjects={subjects} addTask={addTask} editSubject={editSubject} deleteSubject={deleteSubject} />
-          <h2>タスクを追加</h2>
-          <TaskForm addTask={addTask} />
           <TaskList
             tasks={tasks}
             updateTask={updateTask}

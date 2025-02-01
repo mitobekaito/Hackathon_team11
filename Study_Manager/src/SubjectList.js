@@ -23,7 +23,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
       <h2>登録された教科</h2>
       <ul>
         {sortedSubjects.map((subject, index) => (
-          <li key={index}>
+          <li key={index} className="subject-item">
             {isEditing === index ? (
               <div>
                 <input
@@ -45,7 +45,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
                 <button onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
             )}
-            <TaskForm addTask={(task) => addTask(index, task)} />
+            <TaskForm addTask={addTask} subjectIndex={index} />
           </li>
         ))}
       </ul>
