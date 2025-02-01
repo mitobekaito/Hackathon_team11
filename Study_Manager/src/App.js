@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import SubjectForm from "./SubjectForm";
-import SubjectList from "./SubjectList";
 import HamburgerMenu from "./HamburgerMenu";
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList";
@@ -41,12 +39,10 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <HamburgerMenu />
+        <HamburgerMenu>
           <h2>勉強時間管理アプリ</h2>
-          <SubjectForm addSubject={addSubject} />
-          <SubjectList subjects={subjects} addTask={addTask} />
-          <TaskList tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} completeTask={completeTask} isMainView={false} />
           <Link to="/task-completion">タスク消化画面へ</Link>
+        </HamburgerMenu>
         <Routes>
           <Route path="/task-completion" element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />} />
           <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
