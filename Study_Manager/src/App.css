@@ -26,3 +26,20 @@
 .App {
   margin-top: 70px; /* 画面全体を50px下に下げる */
 }
+
+.level-display-container {
+  position: fixed;
+  bottom: 50px;
+  width: 100%;
+  padding: 10px 0;  /* 上下に10pxの余白を設ける */
+ 
+}
+
+.show-more-button-container {
+  position: fixed;
+  bottom: 300px; /* 画面の下に固定 */
+  width: 100%;
+  padding: 10px 0; /* 上下に10pxの余白を設ける */
+  display: flex;
+  justify-content: center;
+}

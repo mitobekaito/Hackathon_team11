@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // 'Link' を削除
 import axios from "axios"; // API通信に必要
 import HamburgerMenu from "./HamburgerMenu";
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList"; // TaskList をインポート
-import CalendarMenu from "./CalendarMenu"; 
+import CalendarMenu from "./CalendarMenu";
 import LevelDisplay from "./LevelDisplay";
 import "./App.css";
 
@@ -65,7 +65,12 @@ function App() {
   //タスクの追加
   const addTask = async (subjectIndex, task) => {
     try {
+      if (!subjects[subjectIndex]) {
+        console.error("Invalid subjectIndex:", subjectIndex);
+        return;
+      }
       const newTask = { ...task, subjectId: subjects[subjectIndex]._id };//科目IDを関連付ける
+      console.log("追加するタスク：", newTask); // 追加するタスクをログに出力
       const res = await axios.post("http://localhost:4000/tasks", newTask);
       setTasks([...tasks, res.data]);//取得したデータを更新
     } catch (err) {
@@ -100,36 +105,30 @@ function App() {
   //タスクの完了
   const completeTask = async (taskIndex, rating) => {
     try {
-        const task = tasks[taskIndex];
+      const updatedTask = { ...tasks[taskIndex], completed: true, rating };
+      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
 
-        const xpIncrement = task.understanding*task.priority*4;
+      //XPを更新
+      const subjectId = tasks[taskIndex].subjectId;
+      if (subjectId) {
+        await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+          increment: 100 //XPを100増加
+        });
 
-        const updatedTask = { ...tasks[taskIndex], completed: true, rating };
-        await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+        //フロント側でもXP更新
+        setSubjects(subjects.map((subject) =>
+          //XPを更新した科目のみXPを増加
+          subject._id === subjectId ? { ...subject, XP: subject.XP + 100 } : subject
+        ));
+      }
 
-        //XPを更新
-        const subjectId = tasks[taskIndex].subjectId;
-        if (subjectId) {
-          await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
-            increment: xpIncrement //XPを増加
-          });
-
-          //フロント側でもXP更新
-          setXP((prevXP) =>({
-            ...prevXP,
-            [subjectId]: (prevXP[subjectId] || 0) + xpIncrement
-          }));
-        }
-        const newTasks = [...tasks];
-        newTasks[taskIndex] = updatedTask;//完了したタスクを取得
-        setTasks(newTasks);//取得したデータを更新
+      const newTasks = [...tasks];
+      newTasks[taskIndex] = updatedTask;//完了したタスクを取得
+      setTasks(newTasks);//取得したデータを更新
     } catch (err) {
-        console.error("タスクの完了に失敗：", err);
+      console.error("タスクの完了に失敗：", err);
     }
   };
-
-  console.log("Subjects:", subjects);
-  console.log("XP:", xp);
 
   //科目の編集
   const editSubject = async (subjectId, updatedSubject) => {
@@ -171,28 +170,30 @@ function App() {
           completeTask={completeTask}
         />
         <h2>勉強時間管理アプリ</h2>
-        <TaskList
-          tasks={tasks}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-          completeTask={completeTask}
-          isMainView={true}
-        />
-        <Link to="/task-completion">タスク消化画面へ</Link>
-        <CalendarMenu subjects={subjects} />
+        
+        {/* タスク一覧 */}
+        {/* TaskList を TaskCompletion に変更 */}
+        <Routes>
+          <Route
+            path="/task-completion"
+            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
+          />
+          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
+        </Routes>
 
-        {/* レベル表示（横スクロール対応） */}
-          <div className="flex flex-wrap justify-center gap-4 p-4">
-            {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
-              <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
-                <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
-              </div>
-            ))}
-          </div>
+        <CalendarMenu />
+         {/* レベル表示（横スクロール対応） */}
+         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
+          {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
+            <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
+              <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
+            </div>
+          ))}
+        </div>
 
         {/* もっと見る/隠す ボタン */}
         {subjects.length > 3 && (
-          <div className="flex justify-center mt-4">
+          <div className="show-more-button-container">
             <button 
               onClick={() => setShowAll(!showAll)} 
               className="btn btn-primary">
@@ -201,13 +202,7 @@ function App() {
           </div>
         )}
 
-        <Routes>
-          <Route
-            path="/task-completion"
-            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
-          />
-          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
-        </Routes>
+        
       </div>
     </Router>
   );
