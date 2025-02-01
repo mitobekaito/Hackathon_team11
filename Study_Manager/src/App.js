@@ -63,18 +63,14 @@ function App() {
   };
 
   //タスクの追加
-  const addTask = async (subjectIndex, task) => {
+  const addTask = async (subjectId, task) => {
     try {
-      if (!subjects[subjectIndex]) {
-        console.error("Invalid subjectIndex:", subjectIndex);
-        return;
-      }
-      const newTask = { ...task, subjectId: subjects[subjectIndex]._id };//科目IDを関連付ける
+      const newTask = { ...task, subjectId };
       console.log("追加するタスク：", newTask); // 追加するタスクをログに出力
       const res = await axios.post("http://localhost:4000/tasks", newTask);
       setTasks([...tasks, res.data]);//取得したデータを更新
     } catch (err) {
-      console.error("タスクの追加に失敗：", err);
+      console.error("タスクの追加に失敗：", err.response?.data || err);
     }
   };
 

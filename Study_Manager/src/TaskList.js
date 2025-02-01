@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./TaskList.css";
 
-function TaskList({ tasks, completeTask, isMainView }) {
+function TaskList({ tasks, updateTask, deleteTask, completeTask, isMainView }) {
   const [isCompleting, setIsCompleting] = useState(null);
   const [completionRating, setCompletionRating] = useState(1);
 
@@ -23,11 +23,12 @@ function TaskList({ tasks, completeTask, isMainView }) {
       <div className="task-list">
         <ul>
           {incompleteTasks.map((task, index) => (
-            <li key={index}>
+            <li key={task._id} className="task-item">
               {isMainView ? (
                 isCompleting === index ? (
                   <>
-                    <span>{task.subjectName}: {task.description} (優先度: {task.priority})</span>
+                    <span className="task-name">{task.description}</span>
+                    <span className="task-priority">優先度 {task.priority}</span>
                     <select
                       value={completionRating}
                       onChange={(e) => setCompletionRating(e.target.value)}
@@ -42,13 +43,16 @@ function TaskList({ tasks, completeTask, isMainView }) {
                   </>
                 ) : (
                   <>
-                    <span>{task.subjectName}: {task.description} (優先度: {task.priority})</span>
+                    <span className="task-name">{task.description}</span>
+                    <span className="task-priority">優先度 {task.priority}</span>
                     <button onClick={() => handleComplete(index)}>完了</button>
+                    <button onClick={() => deleteTask(index)}>削除</button>
                   </>
                 )
               ) : (
                 <>
-                  <span>{task.subjectName}: {task.description} (優先度: {task.priority})</span>
+                  <span className="task-name">{task.description}</span>
+                  <span className="task-priority">優先度 {task.priority}</span>
                 </>
               )}
             </li>
@@ -61,8 +65,11 @@ function TaskList({ tasks, completeTask, isMainView }) {
           <div className="task-list completed-tasks">
             <ul>
               {completedTasks.map((task, index) => (
-                <li key={index}>
-                  <span>{task.subjectName}: {task.description} (優先度: {task.priority}) - 理解度: {task.rating}</span>
+                <li key={task._id} className="task-item">
+                  <span className="task-name">{task.description}</span>
+                  <span className="task-priority">優先度 {task.priority}</span>
+                  <span className="task-rating">理解度 {task.rating}</span>
+                  <button onClick={() => deleteTask(index)}>削除</button>
                 </li>
               ))}
             </ul>
