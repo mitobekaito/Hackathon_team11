@@ -24,17 +24,44 @@ router.get('/:id', async(req, res) => {
 
 router.post('/', async(req, res) => {
     try{
+        console.log("受信したデータ：", req.body);//デバック用
+
+        //科目名と日付がない場合はエラーメッセージを返す
+        if(!req.body.name || !req.body.date) return res.status(400).json({ message: "科目名と日付は必須です" });
+
         //リクエストから新しい科目を作成
-        const newSubject = new Subject(req.body)({
+        const newSubject = new Subject({
             name: req.body.name,
             date: req.body.date,
-            XP: req.body.XP,
+            XP: 0
         });
+
         //新しい科目をデータベースに保存
         const saveSubject = await newSubject.save();
         res.status(201).json(saveSubject);//科目をクライアントにjson形式で返す
     } catch(err){
-        res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す
+        console.log("科目の追加エラー", err);//デバック用
+        res.status(500).json({ error: "科目の追加に失敗しました", details: err.message });//エラーがあればエラーメッセージを返す
+    }
+});
+
+router.put('/:id/increase-xp', async (req, res) => {
+    try {
+        const { increment } = req.body; // どれだけ XP を増やすかをリクエストから取得
+
+        // XP を更新
+        const updatedSubject = await Subject.findByIdAndUpdate(
+            req.params.id,
+            { $inc: { XP: increment } }, // XP を増加
+            { new: true }
+        );
+
+        if (!updatedSubject) return res.status(404).json({ error: "科目が見つかりません" });
+
+        res.status(200).json(updatedSubject);
+    } catch (err) {
+        console.error("XP更新エラー:", err);
+        res.status(500).json({ error: "XP の更新に失敗しました" });
     }
 });
 
