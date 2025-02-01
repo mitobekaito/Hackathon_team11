@@ -24,7 +24,7 @@
 }
 
 .App {
-  margin-top: 70px; /* 画面全体を50px下に下げる */
+  margin-top: 50px; /* 画面全体を50px下に下げる */
 }
 
 .level-display-container {
@@ -49,4 +49,13 @@
   width: 80px; /* ボタンの幅を指定 */
   height: 20px; /* ボタンの高さを指定 */
   font-size: 14px; /* フォントサイズを指定 */
+}
+
+/*題名の設定*/
+.app-title {
+  text-align: center; /* 中央に配置 */
+  font-size: 2.5rem; /* フォントサイズを変更 */
+  font-weight: bold; /* フォントの太さを変更 */
+  margin-top: 20px; /* 上部の余白を追加 */
+  margin-bottom: 20px; /* 下部の余白を追加 */
 }
