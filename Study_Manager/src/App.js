@@ -41,17 +41,22 @@ function App() {
   //科目の追加
   const addSubject = async(subject) => {
     try {
-      const res = await axios.post("http://localhost:3000/subjects", subject);
-      setSubjects([...subjects, res.data]);
+      console.log("追加する科目：", subject);//デバック用
+
+      const res = await axios.post("http://localhost:3000/subjects", {
+        name: subject.name,
+        date: subject.date || new Date().toISOString().split('T')[0] //日付がない場合は現在の日付を取得
+      });
+      setSubjects([...subjects, res.data]);//取得したデータを更新
     } catch (err) {
-      console.error("科目の追加に失敗：", err);
+      console.error("科目の追加に失敗：", err.response?.data || err);//エラーがあればエラーメッセージを返す
     }
   };
 
   //タスクの追加
   const addTask = async (subjectIndex, task) => {
     try {
-      const newTask = {...tasks, subjectId: subjects[subjectIndex]._id};//科目IDを関連付ける
+      const newTask = {...task, subjectId: subjects[subjectIndex]._id};//科目IDを関連付ける
       const res = await axios.post("http://localhost:3000/tasks", newTask);
       setTasks([...tasks, res.data]);//取得したデータを更新
     } catch (err) {
@@ -64,7 +69,7 @@ function App() {
     try {
       await axios.put(`http://localhost:3000/tasks/${tasks[taskIndex]._id}`, updatedTask);
       const newTasks = [...tasks];
-      newTasks[taskIndex] = updateTask;//更新したデータを取得
+      newTasks[taskIndex] = updatedTask;//更新したデータを取得
       setTasks(newTasks);//取得したデータを更新
     } catch (err) {
       console.error("タスクの更新に失敗：", err);
@@ -88,10 +93,25 @@ function App() {
     try{
       const updatedTask = { ...tasks[taskIndex], completed: true, rating };
       await axios.put(`http://localhost:3000/tasks/${tasks[taskIndex]._id}`, updatedTask);
+
+      //XPを更新
+      const subjectId = tasks[taskIndex].subjectId;
+      if(subjectId){
+        await axios.put(`http://localhost:3000/subjects/${subjectId}/increase-xp`, { 
+          increment: 100 //XPを100増加
+        });
+      
+        //フロント側でもXP更新
+        setSubjects(subjects.map((subject) => 
+          //XPを更新した科目のみXPを増加
+          subject._id === subjectId ? { ...subject, XP: subject.XP + 100 } : subject
+        ));
+      }
+
       const newTasks = [...tasks];
       newTasks[taskIndex] = updatedTask;//完了したタスクを取得
       setTasks(newTasks);//取得したデータを更新
-    }catch(err){
+    } catch(err){
       console.error("タスクの完了に失敗：", err);
     }
   };
