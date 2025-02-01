@@ -3,7 +3,7 @@ import SubjectForm from "./SubjectForm";
 import SubjectList from "./SubjectList";
 import "./HamburgerMenu.css";
 
-function HamburgerMenu({ children, subjects, setSubjects, tasks, setTasks }) {
+function HamburgerMenu({ children, subjects=[], setSubjects, tasks=[], setTasks }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [editedTask, setEditedTask] = useState({ description: "", priority: 1 });
