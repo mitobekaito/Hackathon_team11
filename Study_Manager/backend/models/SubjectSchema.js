@@ -9,8 +9,9 @@ const SubjectSchema = new mongoose.Schema({
     date:{
         type: Date,
         required: true,
+        default: Date.now,
     },
-    XP:{
+    xp:{
         type: Number,
         required: true,
         default: 0,//デフォルト値

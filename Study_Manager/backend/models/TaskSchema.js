@@ -25,14 +25,10 @@ const TaskSchema = new mongoose.Schema({
         max : 5,
         default : 0,
     },
-    subjectid:{
+    subjectId:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'SubjectSchema', //Subjectスキーマと紐付け
+        ref: 'Subject', //Subjectスキーマと紐付け
         required: true,
-    },
-    createdAT: {
-        type: Date,
-        default: Date.now,
     }
  }, { collection: 'task' }); //コレクション名を明示
 

@@ -1,20 +1,40 @@
-import { useState } from "react";
+import React, { useState , useEffect } from "react";
 import TaskForm from "./TaskForm";
+
+
 
 function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   const [isEditing, setIsEditing] = useState(null);
   const [editedSubject, setEditedSubject] = useState({ name: "", date: "" });
 
-  // 日付が近い順にソート
-  const sortedSubjects = [...subjects].sort((a, b) => new Date(a.date) - new Date(b.date));
+  useEffect(() => {
+    console.log("Updated subjects:", subjects);
+  }, [subjects]);
+  
+  
+  console.log("Subjects in SubjectList:", subjects); // デバッグ用
 
+  if (!subjects || subjects.length === 0) {
+    return <p>Loading subjects...</p>; // subjects が空なら表示
+  }
+
+  // 編集モードにする
   const handleEditClick = (index) => {
     setIsEditing(index);
-    setEditedSubject(subjects[index]);
+    setEditedSubject(subjects[index] || { name: "", testDate: "" });
   };
 
+  // 編集内容を保存
   const handleSaveClick = (index) => {
-    editSubject(subjects[index]._id, editedSubject);
+    if (!editedSubject.name || !editedSubject.testDate) {
+      alert("すべての項目を入力してください");
+      return;
+    }
+
+    if (editSubject) {
+      editSubject(subjects[index]._id, editedSubject);
+    }
+
     setIsEditing(null);
   };
 
@@ -22,8 +42,8 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
     <div>
       <h2>登録された教科</h2>
       <ul>
-        {sortedSubjects.map((subject, index) => (
-          <li key={index} className="subject-item">
+        {subjects.map((subject, index) => (
+          <li key={subject._id}>
             {isEditing === index ? (
               <div>
                 <input
@@ -40,12 +60,18 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               </div>
             ) : (
               <div>
-                {subject.name} - {new Date(subject.date).toLocaleString()}
+                {subject.name} - {new Date(subject.testDate).toLocaleDateString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
             )}
-            <TaskForm addTask={addTask} subjectIndex={index} />
+            {/* `subject._id` を `TaskForm` に正しく渡す */}
+            {subject._id ? (
+              <TaskForm addTask={(task) => addTask(subject._id, task)} subjectId={subject._id} />
+            ) : (
+              <p>Loading TaskForm...</p>
+            )}
+
           </li>
         ))}
       </ul>
