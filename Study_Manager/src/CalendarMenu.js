@@ -11,21 +11,40 @@ const CalendarMenu = ({ subjects }) => {
         setIsOpen(!isOpen);
     };
 
+    console.log("テスト", subjects); // subjectsの内容を確認
+
+    // カレンダーの日付に表示する教科の色
+    const colors = [
+        "#FFD700", // ゴールド
+        "#FF4500", // オレンジレッド
+        "#1E90FF", // ドッジブルー
+        "#32CD32", // ライムグリーン
+        "#9370DB", // ミディアムパープル
+    ];
+
     //カレンダーの日付に科目名を表示するreact-calendarの関数
     const tileContent = ({ date, view }) => {
-        if (view === 'month' && Array.isArray(subjects)) { // subjectsが配列かどうかをチェック
+        if (view === 'month' && subjects) {
             const subjectsForTheDay = subjects.filter(subject =>
                 new Date(subject.date).toDateString() === date.toDateString()
             ).slice(0, 4); // 最大4つの教科を取得
             return (
                 <div className="subjects">
                     {subjectsForTheDay.map((subject, index) => (
-                        <div key={index} className="subject">{subject.name}</div>
+                        <div
+                            key={index}
+                            className="subject"
+                            style={{
+                                backgroundColor: colors[index % colors.length]
+                            }}
+                        >
+                            {subject.name}
+                        </div>
                     ))}
                 </div>
             );
         }
-        return null; // subjectsがない場合は何も表示しない
+        return null;
     };
 
     return (
@@ -38,9 +57,15 @@ const CalendarMenu = ({ subjects }) => {
                     &times;
                 </button>
                 <div className="menu-content-right">
-                    <h3>カレンダー</h3>
-                    <Calendar value={value} onClickDay={(e) => setValue(e)} tileContent={tileContent} />
-                    <div>{value ? value.toString() : "日付を選択してください"}</div>
+                    <div className="calendar-container">
+                        <h3>カレンダー</h3>
+                        <Calendar
+                            value={value}
+                            onClickDay={(e) => setValue(e)}
+                            tileContent={tileContent}
+                            formatDay={(locale, date) => date.getDate()} // 日付から「日」を除く
+                        />
+                    </div>
                 </div>
             </div>
         </div>

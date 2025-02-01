@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios"; // API通信に必要
 import HamburgerMenu from "./HamburgerMenu";
+import SubjectForm from './SubjectForm';
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList"; // TaskList をインポート
 import CalendarMenu from "./CalendarMenu";
@@ -166,6 +167,7 @@ function App() {
           completeTask={completeTask}
         />
         <h2 className="app-title">Study Manager</h2>
+
         <TaskList
           tasks={tasks}
           updateTask={updateTask}
@@ -173,7 +175,10 @@ function App() {
           completeTask={completeTask}
           isMainView={true}
         />
-        <CalendarMenu />
+
+        {/* カレンダー */}
+        <CalendarMenu subjects={subjects} />
+
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
@@ -186,8 +191,8 @@ function App() {
         {/* もっと見る/隠す ボタン */}
         {subjects.length > 3 && (
           <div className="show-more-button-container">
-            <button 
-              onClick={() => setShowAll(!showAll)} 
+            <button
+              onClick={() => setShowAll(!showAll)}
               className="btn btn-primary">
               {showAll ? "隠す" : "もっと見る"}
             </button>
@@ -202,7 +207,7 @@ function App() {
           <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
         </Routes>
       </div>
-    </Router>
+    </Router >
   );
 }
 

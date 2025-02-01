@@ -28,27 +28,82 @@
   left: 20px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 30px;
   cursor: pointer;
+  color: white;
 }
 
 .menu-content-right {
   padding: 20px;
 }
 
+.calendar-container {
+  padding: 20px;
+}
+
+.react-calendar {
+  width: 100%;
+  max-width: 1000px;
+  /* カレンダーの最大幅を設定 */
+  height: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.react-calendar__tile {
+  max-width: initial !important;
+  height: 100px;
+  /* 各日付セルの高さを設定 */
+  display: flex;
+  flex-direction: column;
+  /* 重要: 日付と科目を縦に並べる */
+  align-items: flex-start;
+  /* 上部に揃える */
+  justify-content: flex-start;
+  /* 左に揃える */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.react-calendar__tile>abbr {
+  display: block;
+  width: 100%;
+  text-align: left;
+  /* 重要: 日付を左揃えにする */
+  font-size: 16px;
+  /* 日付のフォントサイズを調整 */
+  margin-bottom: 5px;
+  /* 日付と科目の間にスペースを追加 */
+}
+
 .subjects {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  gap: 0px;
+  /* **縦の間隔をゼロに** */
+  width: 100%;
 }
 
 .subject {
-  background-color: #ffeb3b;
-  border-radius: 50%;
-  padding: 5px;
-  font-size: 12px;
-  text-align: center;
-  margin: 2px 0;
+  padding: 1px 4px;
+  /* **パディングを小さく** */
+  border-radius: 3px;
+  font-size: 9px;
+  /* **フォントサイズを小さく** */
+  font-weight: bold;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 1px 0;
+  /* **適度なマージン** */
+  line-height: 1.3;
+  /* **行間を少し広げる** */
+  color: white;
+  max-width: 100%;
 }
 
 /* 土曜日だけ青色にする */
@@ -58,7 +113,23 @@
 
 /* active時の文字の色（選択後の日付の色） */
 .react-calendar__tile--active {
-  color: white !important;
+  background: #76baff;
+  color: white;
+}
+
+.react-calendar__tile--now {
+  background: rgba(200, 200, 200, 0.3) !important;
+  /* 薄い青色 (透明度30%) */
+  color: black !important;
+  /* 文字色は黒 */
+
+}
+
+.react-calendar__tile--active {
+  background: rgba(48, 180, 228, 0.756) !important;
+  /* 薄い灰色 (透明度30%) */
+  color: rgb(0, 0, 0) !important;
+  /* 文字色は黒 */
 }
 
 /* 土曜を全部青色にしても今月以外は灰色にする */
