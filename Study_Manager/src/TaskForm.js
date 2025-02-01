@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function TaskForm({ addTask, subjectIndex }) {
+function TaskForm({ addTask, subjectId }) {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(1);
+
+  useEffect(() => {
+    console.log("TaskForm subjectId:", subjectId); // デバッグ用
+  }, [subjectId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!description) return;
-    if (subjectIndex === undefined) {
-      console.error("subjectIndex is undefined");
+    if (!subjectId) {
+      console.error("Error: subjectId is undefined");
       return;
     }
-    addTask(subjectIndex, { description, priority });
+    addTask(subjectId, { description, priority });
     setDescription("");
     setPriority(1);
   };
@@ -25,7 +29,7 @@ function TaskForm({ addTask, subjectIndex }) {
         onChange={(e) => setDescription(e.target.value)}
         required
       />
-      <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+      <select value={priority} onChange={(e) => setPriority(Number(e.target.value))}>
         <option value={1}>優先度 1</option>
         <option value={2}>優先度 2</option>
         <option value={3}>優先度 3</option>

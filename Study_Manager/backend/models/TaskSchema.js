@@ -23,15 +23,12 @@ const TaskSchema = new mongoose.Schema({
         //0~5の星評価で理解度を設定したいため、0~5の範囲で設定しました。
         min : 0,
         max : 5,
+        default: 0,
     },
-    subjectid:{
+    subjectId:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'SubjectSchema', //Subjectスキーマと紐付け
+        ref: 'Subject', //Subjectスキーマと紐付け
         required: true,
-    },
-    createdAT: {
-        type: Date,
-        default: Date.now,
     }
  }, { collection: 'task' }); //コレクション名を明示
 

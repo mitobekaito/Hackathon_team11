@@ -25,16 +25,22 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
     try{
       //リクエストから新しいタスクを作成
-      const newtask = new Task(req.body)({
-        title: req.body.title,
-        description: req.body.description,
-        priority: req.body.priority,
-        understading: req.body.understading
+      const { title, description, priority, understanding, subjectid } = req.body;
+      if (!title || !description || !priority || !subjectid) {
+        return res.status(400).json({ error: "必要なフィールドが不足しています" });
+      }
+      const newtask = new Task({
+        title,
+        description,
+        priority,
+        understanding,
+        subjectid
       });
       //新しいタスクをデータベースに保存
       const savetask = await newtask.save();
       res.status(201).json(savetask);//タスクをクライアントにjson形式で返す
     } catch(err){
+        console.error("タスクの追加に失敗:", err);
         res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す
     }
 });

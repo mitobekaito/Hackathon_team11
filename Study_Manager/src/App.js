@@ -63,11 +63,16 @@ function App() {
   };
 
   //タスクの追加
-  const addTask = async (subjectIndex, task) => {
+  const addTask = async (subjectId, task) => {
     try {
-      const newTask = { ...task, subjectId: subjects[subjectIndex]._id };//科目IDを関連付ける
+      if (!subjectId) {
+        console.error("エラー: subjectId が未定義");
+        return;
+      }
+      console.log("追加するタスク:", { subjectId, ...task }); // デバッグ用
+      const newTask = { ...task, subjectId };//科目IDを関連付ける
       const res = await axios.post("http://localhost:4000/tasks", newTask);
-      setTasks([...tasks, res.data]);//取得したデータを更新
+      setTasks((prev) => [...prev, res.data]);//取得したデータを更新
     } catch (err) {
       console.error("タスクの追加に失敗：", err);
     }
@@ -76,60 +81,33 @@ function App() {
   //タスクの更新
   const updateTask = async (taskIndex, updatedTask) => {
     try {
-      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
-      const newTasks = [...tasks];
-      newTasks[taskIndex] = updatedTask;//更新したデータを取得
-      setTasks(newTasks);//取得したデータを更新
+      const taskId = tasks[taskIndex]?._id;
+      if (!taskId) {
+        console.error("エラー: タスクIDが取得できません");
+        return;
+      }
+      const res = await axios.put(`http://localhost:4000/tasks/${taskId}`, updatedTask);
+      setTasks((prev) => prev.map((task, index) => (index === taskIndex ? res.data : task)));
     } catch (err) {
-      console.error("タスクの更新に失敗：", err);
+      console.error("タスクの更新に失敗:", err.message);
     }
   };
+  
 
   //タスクの削除
   const deleteTask = async (taskIndex) => {
     try {
-      await axios.delete(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`);
-      const newTasks = [...tasks];
-      newTasks.splice(taskIndex, 1);//削除したタスクを取得
-      setTasks(newTasks);//取得したデータを更新
+      const taskId = tasks[taskIndex]?._id;
+      if (!taskId) {
+        console.error("エラー: タスクIDが取得できません");
+        return;
+      }
+      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
+      setTasks((prev) => prev.filter((_, index) => index !== taskIndex));
     } catch (err) {
-      console.error("タスクの削除に失敗：", err);
+      console.error("タスクの削除に失敗:", err.message);
     }
   };
-
-  //タスクの完了
-  const completeTask = async (taskIndex, rating) => {
-    try {
-        const task = tasks[taskIndex];
-
-        const xpIncrement = task.understanding*task.priority*4;
-
-        const updatedTask = { ...tasks[taskIndex], completed: true, rating };
-        await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
-
-        //XPを更新
-        const subjectId = tasks[taskIndex].subjectId;
-        if (subjectId) {
-          await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
-            increment: xpIncrement //XPを増加
-          });
-
-          //フロント側でもXP更新
-          setXP((prevXP) =>({
-            ...prevXP,
-            [subjectId]: (prevXP[subjectId] || 0) + xpIncrement
-          }));
-        }
-        const newTasks = [...tasks];
-        newTasks[taskIndex] = updatedTask;//完了したタスクを取得
-        setTasks(newTasks);//取得したデータを更新
-    } catch (err) {
-        console.error("タスクの完了に失敗：", err);
-    }
-  };
-
-  console.log("Subjects:", subjects);
-  console.log("XP:", xp);
 
   //科目の編集
   const editSubject = async (subjectId, updatedSubject) => {
@@ -140,7 +118,7 @@ function App() {
       );
       setSubjects(newSubjects);
     } catch (err) {
-      console.error("科目の編集に失敗：", err);
+      console.error("科目の編集に失敗:", err.message);
     }
   };
 
@@ -151,13 +129,54 @@ function App() {
       const newSubjects = subjects.filter(subject => subject._id !== subjectId);
       setSubjects(newSubjects);
     } catch (err) {
-      console.error("科目の削除に失敗：", err);
+      console.error("科目の削除に失敗:", err.message);
     }
   };
+
+    //タスクの完了
+    const completeTask = async (taskIndex, rating) => {
+      try {
+        const task = tasks[taskIndex];
+        if (!task) {
+          console.error("エラー: タスクが取得できません");
+          return;
+        }
+    
+        const xpIncrement = (task.understanding || 0) * task.priority * 4;
+    
+        const updatedTask = { ...task, completed: true, rating };
+        await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
+        
+        // XPを更新
+        const subjectId = task.subjectId;
+        if (subjectId) {
+          await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+            increment: xpIncrement,
+          });
+    
+          // フロントエンドの状態を更新
+          setXP((prevXP) => ({
+            ...prevXP,
+            [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
+          }));
+        }
+    
+        setTasks((prev) => prev.map((t, index) => (index === taskIndex ? updatedTask : t)));
+      } catch (err) {
+        console.error("タスクの完了に失敗:", err.message);
+      }
+    };
+  
+    console.log("Subjects:", subjects);
+    console.log("XP:", xp);
 
   return (
     <Router>
       <div className="App">
+      {(!subjects || subjects.length === 0) ? (
+        <p>Loading subjects...</p>
+      ) : (
+        <>
         <HamburgerMenu
           subjects={subjects}
           setSubjects={setSubjects}
@@ -208,6 +227,8 @@ function App() {
           />
           <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
         </Routes>
+        </>
+      )}
       </div>
     </Router>
   );

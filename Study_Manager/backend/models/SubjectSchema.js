@@ -7,10 +7,11 @@ const SubjectSchema = new mongoose.Schema({
         maxlength: 20,//文字制限 あまり長いと見づらいため
     },
     date:{
-        type: String,
+        type: Date,
         required: true,
+        default: Date.now,
     },
-    XP:{
+    xp:{
         type: Number,
         required: true,
         default: 0,//デフォルト値
