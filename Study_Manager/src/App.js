@@ -116,16 +116,27 @@ function App() {
   };
 
   //科目の編集
-  const editSubject = (index, updatedSubject) => {
-    const newSubjects = [...subjects];
-    newSubjects[index] = updatedSubject;
-    setSubjects(newSubjects);
+  const editSubject = async (subjectId, updatedSubject) => {
+    try {
+      await axios.put(`http://localhost:4000/subjects/${subjectId}`, updatedSubject);
+      const newSubjects = subjects.map(subject =>
+        subject._id === subjectId ? { ...subject, ...updatedSubject } : subject
+      );
+      setSubjects(newSubjects);
+    } catch (err) {
+      console.error("科目の編集に失敗：", err);
+    }
   };
 
   //科目の削除
-  const deleteSubject = (index) => {
-    const newSubjects = subjects.filter((_, i) => i !== index);
-    setSubjects(newSubjects);
+  const deleteSubject = async (subjectId) => {
+    try {
+      await axios.delete(`http://localhost:4000/subjects/${subjectId}`);
+      const newSubjects = subjects.filter(subject => subject._id !== subjectId);
+      setSubjects(newSubjects);
+    } catch (err) {
+      console.error("科目の削除に失敗a：", err);
+    }
   };
 
   return (
