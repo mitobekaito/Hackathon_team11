@@ -31,7 +31,7 @@ try {
     // app.use('/users', userRouter); 
     app.use('/auth', authRouter);
     app.use('/subjects', subjectRouter);
-    app.use('/tasks', taskRouter);
+    app.use('/tasks', taskRouter);    
 } catch (err) {
     console.log("ルートの読み込みエラー", err.message);
 }
