@@ -135,7 +135,7 @@ function App() {
       const newSubjects = subjects.filter(subject => subject._id !== subjectId);
       setSubjects(newSubjects);
     } catch (err) {
-      console.error("科目の削除に失敗a：", err);
+      console.error("科目の削除に失敗：", err);
     }
   };
 
