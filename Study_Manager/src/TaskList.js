@@ -31,7 +31,7 @@ function TaskList({ tasks, updateTask, deleteTask, completeTask, isMainView }) {
                     <span className="task-priority">優先度 {task.priority}</span>
                     <select
                       value={completionRating}
-                      onChange={(e) => setCompletionRating(e.target.value)}
+                      onChange={(e) => setCompletionRating(Number(e.target.value))}
                     >
                       <option value={1}>理解度 1</option>
                       <option value={2}>理解度 2</option>
@@ -68,7 +68,7 @@ function TaskList({ tasks, updateTask, deleteTask, completeTask, isMainView }) {
                 <li key={task._id} className="task-item">
                   <span className="task-name">{task.description}</span>
                   <span className="task-priority">優先度 {task.priority}</span>
-                  <span className="task-rating">理解度 {task.rating}</span>
+                  <span className="task-rating">理解度 {task.understanding}</span>
                   <button onClick={() => deleteTask(index)}>削除</button>
                 </li>
               ))}

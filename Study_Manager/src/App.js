@@ -21,7 +21,7 @@ function App() {
       setSubjects(res.data);
 
       const initialXp = res.data.reduce((acc, subject) => {
-        acc[subject._id] = subject.XP || 0;
+        acc[subject._id] = subject.xp || 0;
         return acc;
       }, {});
       setXP(initialXp);
@@ -52,7 +52,7 @@ function App() {
         name: subject.name,
         date: subject.date || new Date().toISOString().split('T')[0]
       });
-      setSubjects([...subjects, res.data._id]);
+      setSubjects([...subjects, res.data]);
     } catch (err) {
       console.error("科目の追加に失敗：", err.response?.data || err);
     }
@@ -105,9 +105,10 @@ function App() {
         return;
       }
 
-      const xpIncrement = (task.understanding || 0) * task.priority * 4;
+      const xpIncrement = (rating || 0) * task.priority * 4;
+      console.log(`XP計算式: (${rating} || 0) * ${task.priority} * 4 = ${xpIncrement}`);
 
-      const updatedTask = { ...task, completed: true, rating };
+      const updatedTask = { ...task, completed: true, understanding: rating };
       await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
 
       let subjectId = task.subjectId;
@@ -116,17 +117,16 @@ function App() {
       }
 
       if (subjectId && typeof subjectId === 'string') {
-        await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+        const res = await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
           increment: xpIncrement,
         });
 
+        const updatedSubject = res.data;
         setXP((prevXP) => ({
           ...prevXP,
-          [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
+          [subjectId]: updatedSubject.xp,
         }));
       } else {
-        console.log("サブジェクトあいでーです",subjectId)
-        console.log("typeof subjectId", typeof subjectId)
         console.error("エラー: subjectIdが無効です");
       }
 
@@ -187,7 +187,7 @@ function App() {
           <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
         </Routes>
 
-        <CalendarMenu />
+        <CalendarMenu subjects={subjects} />
         
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
