@@ -11,7 +11,6 @@ function TaskForm({ addTask, subjectId }) {
       console.log("TaskForm received subjectId:", subjectId);
     }
   }, [subjectId]);
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import SubjectForm from "./SubjectForm";
-import SubjectList from "./SubjectList";
 import TaskForm from "./TaskForm";
+import SubjectList from "./SubjectList";
 import TaskList from "./TaskList";
 import "./HamburgerMenu.css";
 
@@ -22,7 +22,7 @@ function HamburgerMenu({ subjects, setSubjects, addSubject, editSubject, deleteS
         <div className="menu-content">
           <SubjectForm addSubject={addSubject} />
           <SubjectList subjects={subjects} addTask={addTask} editSubject={editSubject} deleteSubject={deleteSubject} />
-          <TaskForm addTask={addTask} subjectId={subjects.length > 0 ? subjects[0]._id : null} /> {/* タスク入力フォームを追加 */}
+          {subjects.length > 0 && <TaskForm addTask={addTask} subjectId={subjects[0]._id} />} {/* タスク入力フォームを追加 */}
           <TaskList
             tasks={tasks}
             updateTask={updateTask}

@@ -3,8 +3,8 @@ const Subject = require('../models/SubjectSchema');//StudySchemaをインポー�
 
 router.get('/', async(req, res) => {
     try{
-        //データベースから全ての科目を取得
-        const subjects = await Subject.find();
+        // _idフィールドのみを取得
+        const subjects = await Subject.find({}, '_id');
         res.status(200).json(subjects);//json形式で返す
     } catch(err){
         res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す
@@ -26,15 +26,8 @@ router.post('/', async(req, res) => {
     try{
         console.log("受信したデータ：", req.body);//デバック用
 
-        //科目名と日付がない場合はエラーメッセージを返す
-        if(!req.body.name || !req.body.date) return res.status(400).json({ message: "科目名と日付は必須です" });
-
         //リクエストから新しい科目を作成
-        const newSubject = new Subject({
-            name: req.body.name,
-            date: req.body.date,
-            XP: 0
-        });
+        const newSubject = new Subject(req.body);
 
         //新しい科目をデータベースに保存
         const saveSubject = await newSubject.save();
@@ -52,7 +45,7 @@ router.put('/:id/increase-xp', async (req, res) => {
         // XP を更新
         const updatedSubject = await Subject.findByIdAndUpdate(
             req.params.id,
-            { $inc: { XP: increment } }, // XP を増加
+            { $inc: { xp: increment } }, // XP を増加
             { new: true }
         );
 
