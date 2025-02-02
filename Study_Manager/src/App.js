@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import HamburgerMenu from "./HamburgerMenu";
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList";
 import CalendarMenu from "./CalendarMenu";
 import LevelDisplay from "./LevelDisplay";
-import TaskForm from "./TaskForm";
 import "./App.css";
 
 function App() {
@@ -52,7 +51,7 @@ function App() {
         name: subject.name,
         date: subject.date || new Date().toISOString().split('T')[0]
       });
-      setSubjects([...subjects, res.data]);
+      setSubjects([...subjects, res.data._id]);
     } catch (err) {
       console.error("科目の追加に失敗：", err.response?.data || err);
     }
@@ -60,10 +59,6 @@ function App() {
 
   const addTask = async (subjectId, task) => {
     try {
-      if (!subjects[subjectIndex]) {
-        console.error("Invalid subjectIndex:", subjectIndex);
-        return;
-      }
       console.log("追加するタスク:", { subjectId, ...task });
       const newTask = { ...task, subjectId };
       const res = await axios.post("http://localhost:4000/tasks", newTask);
@@ -75,10 +70,13 @@ function App() {
 
   const updateTask = async (taskIndex, updatedTask) => {
     try {
-      await axios.put(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`, updatedTask);
-      const newTasks = [...tasks];
-      newTasks[taskIndex] = updatedTask;//更新したデータを取得
-      setTasks(newTasks);//取得したデータを更新
+      const taskId = tasks[taskIndex]?._id;
+      if (!taskId) {
+        console.error("エラー: タスクIDが取得できません");
+        return;
+      }
+      const res = await axios.put(`http://localhost:4000/tasks/${taskId}`, updatedTask);
+      setTasks((prev) => prev.map((task, index) => (index === taskIndex ? res.data : task)));
     } catch (err) {
       console.error("タスクの更新に失敗：", err.message);
     }
@@ -86,10 +84,13 @@ function App() {
 
   const deleteTask = async (taskIndex) => {
     try {
-      await axios.delete(`http://localhost:4000/tasks/${tasks[taskIndex]._id}`);
-      const newTasks = [...tasks];
-      newTasks.splice(taskIndex, 1);//削除したタスクを取得
-      setTasks(newTasks);//取得したデータを更新
+      const taskId = tasks[taskIndex]?._id;
+      if (!taskId) {
+        console.error("エラー: タスクIDが取得できません");
+        return;
+      }
+      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
+      setTasks((prev) => prev.filter((_, index) => index !== taskIndex));
     } catch (err) {
       console.error("タスクの削除に失敗：", err.message);
     }

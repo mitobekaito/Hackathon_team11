@@ -11,7 +11,6 @@ function TaskForm({ addTask, subjectId }) {
       console.log("TaskForm received subjectId:", subjectId);
     }
   }, [subjectId]);
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,39 +43,4 @@ function TaskForm({ addTask, subjectId }) {
   );
 }
 
-function SubjectForm({ addSubject }) {
-  const [name, setName] = useState("");
-  const [priority, setPriority] = useState(1);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !priority) return;
-    addSubject({ name, priority });
-    setName("");
-    setPriority(1);
-  };
-
-  return (
-    <div>
-      <h2>タスクを登録</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="内容"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <select value={priority} onChange={(e) => setPriority(Number(e.target.value))}>
-          <option value={1}>優先度 1</option>
-          <option value={2}>優先度 2</option>
-          <option value={3}>優先度 3</option>
-        </select>
-        <button type="submit" className="btn btn-primary task-submit-button">追加</button>
-      </form>
-    </div>
-  );
-}
-
-export default SubjectForm;
-export { TaskForm };
+export default TaskForm;
