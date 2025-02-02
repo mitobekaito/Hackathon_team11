@@ -3,8 +3,8 @@ const Subject = require('../models/SubjectSchema');
 
 router.get('/', async(req, res) => {
     try{
-        // _idフィールドのみを取得
-        const subjects = await Subject.find({}, '_id');
+        // 必要なフィールドをすべて取得
+        const subjects = await Subject.find({}, 'name date xp');
         res.status(200).json(subjects);//json形式で返す
     } catch(err){
         res.status(500).json({ error: err.message });//エラーがあればエラーメッセージを返す
