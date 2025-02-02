@@ -150,9 +150,16 @@ function App() {
 
   const deleteSubject = async (subjectId) => {
     try {
+      // **教科に紐づいたタスクの削除**
+      await axios.delete(`http://localhost:4000/tasks/by-subject/${subjectId}`);
+
+      // **教科の削除**
       await axios.delete(`http://localhost:4000/subjects/${subjectId}`);
-      const newSubjects = subjects.filter(subject => subject._id !== subjectId);
-      setSubjects(newSubjects);
+
+      //削除後のデータ取得
+      await fetchTasks();
+      setSubjects((prevSubjects) => prevSubjects.filter(subject => subject._id !== subjectId));
+      console.log(`教科 ${subjectId} と紐づいたタスクを削除しました`);
     } catch (err) {
       console.error("科目の削除に失敗：", err);
     }
@@ -177,7 +184,7 @@ function App() {
           completeTask={completeTask}
         />
         <h2 className="app-title">Study Manager</h2>
-        
+
         {/* タスク一覧 */}
         <Routes>
           <Route
@@ -188,7 +195,7 @@ function App() {
         </Routes>
 
         <CalendarMenu subjects={subjects} />
-        
+
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
@@ -201,8 +208,8 @@ function App() {
         {/* もっと見る/隠す ボタン */}
         {subjects.length > 3 && (
           <div className="show-more-button-container">
-            <button 
-              onClick={() => setShowAll(!showAll)} 
+            <button
+              onClick={() => setShowAll(!showAll)}
               className="btn btn-primary">
               {showAll ? "隠す" : "もっと見る"}
             </button>
