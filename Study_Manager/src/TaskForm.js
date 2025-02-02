@@ -19,6 +19,7 @@ function TaskForm({ addTask, subjectId }) {
       console.error("Error: subjectId is undefined");
       return;
     }
+    console.log("handleSubmit subjectId:", subjectId); // subjectId をコンソールに出力
     addTask(subjectId, { description, priority });
     setDescription("");
     setPriority(1);

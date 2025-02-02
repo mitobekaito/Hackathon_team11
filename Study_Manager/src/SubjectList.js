@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   const [isEditing, setIsEditing] = useState(null);
-  const [editedSubject, setEditedSubject] = useState({ name: "", date: "" });
+  const [editedSubject, setEditedSubject] = useState({ name: "", priority: 1, date: "" });
 
   useEffect(() => {
     console.log("Updated subjects:", subjects);
@@ -24,10 +24,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
 
   // 編集内容を保存
   const handleSaveClick = (index) => {
-    if (!editedSubject.name || !editedSubject.testDate) {
-      alert("すべての項目を入力してください");
-      return;
-    }
+    
 
     if (editSubject) {
       editSubject(subjects[index]._id, editedSubject);
@@ -49,16 +46,24 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
                   value={editedSubject.name}
                   onChange={(e) => setEditedSubject({ ...editedSubject, name: e.target.value })}
                 />
+                <select
+                  value={editedSubject.priority}
+                  onChange={(e) => setEditedSubject({ ...editedSubject, priority: Number(e.target.value) })}
+                >
+                  <option value={1}>優先度 1</option>
+                  <option value={2}>優先度 2</option>
+                  <option value={3}>優先度 3</option>
+                </select>
                 <input
                   type="datetime-local"
                   value={new Date(editedSubject.date).toISOString().slice(0, 16)}
-                  onChange={(e) => setEditedSubject({ ...editedSubject, date: e.target.value })}
+                  onChange={(e) => setEditedSubject({ ...editedSubject, date: new Date(e.target.value).toISOString() })}
                 />
                 <button onClick={() => handleSaveClick(index)}>保存</button>
               </div>
             ) : (
               <div>
-                {subject.name} - {new Date(subject.testDate).toLocaleDateString()}
+                {subject.name} - 試験日 - {new Date(subject.date).toLocaleString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
