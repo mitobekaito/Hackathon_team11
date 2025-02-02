@@ -60,4 +60,22 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// 特定の教科に紐づいたタスクを一括削除
+router.delete('/by-subject/:subjectId', async (req, res) => {
+    try {
+        const { subjectId } = req.params;
+        const deletedTasks = await Task.deleteMany({ subjectId: subjectId });
+
+        // **削除されたタスクがない場合**
+        if (deletedTasks.deletedCount === 0) {
+            return res.status(404).json({ message: "紐づいたタスクが見つかりません" });
+        }
+
+        res.status(200).json({ message: `${deletedTasks.deletedCount} 件のタスクを削除しました` });
+    } catch (err) {
+        console.error("タスク一括削除エラー:", err);
+        res.status(500).json({ error: "タスクの一括削除に失敗しました" });
+    }
+});
+
 module.exports = router;
