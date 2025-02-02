@@ -58,7 +58,7 @@ const CalendarMenu = ({ subjects }) => {
                 </button>
                 <div className="menu-content-right">
                     <div className="calendar-container">
-                        <h3>カレンダー</h3>
+                        <h3 className="calendar-title">カレンダー</h3>
                         <Calendar
                             value={value}
                             onClickDay={(e) => setValue(e)}
