@@ -105,7 +105,7 @@ function App() {
         return;
       }
 
-      const xpIncrement = (rating || 0) * task.priority * 4;
+      const xpIncrement = (rating || 0) * task.priority * 5;
       console.log(`XP計算式: (${rating} || 0) * ${task.priority} * 4 = ${xpIncrement}`);
 
       const updatedTask = { ...task, completed: true, understanding: rating };
