@@ -22,7 +22,7 @@ function HamburgerMenu({ subjects, setSubjects, addSubject, editSubject, deleteS
         <div className="menu-content">
           <SubjectForm addSubject={addSubject} />
           <SubjectList subjects={subjects} addTask={addTask} editSubject={editSubject} deleteSubject={deleteSubject} />
-          {subjects.length > 0 && <TaskForm addTask={addTask} subjectId={subjects[0]._id} />} {/* タスク入力フォームを追加 */}
+        
           <TaskList
             tasks={tasks}
             updateTask={updateTask}
