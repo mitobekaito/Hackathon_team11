@@ -37,7 +37,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
       <h2>登録された教科</h2>
       <ul>
         {subjects.map((subject, index) => (
-          <li key={subject._id}>
+          <li key={subject._id}className="subject-item">
             {isEditing === index ? (
               <div>
                 <input
@@ -62,7 +62,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               </div>
             ) : (
               <div>
-                {subject.name} - 優先度 {subject.priority} - {new Date(subject.date).toLocaleString()}
+                {subject.name} - 試験日 - {new Date(subject.date).toLocaleString()}
                 <button onClick={() => handleEditClick(index)}>編集</button>
                 <button className="delete-button" onClick={() => deleteSubject(subject._id)}>削除</button>
               </div>
