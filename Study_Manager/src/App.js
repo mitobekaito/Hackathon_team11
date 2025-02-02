@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 import HamburgerMenu from "./HamburgerMenu";
+import SubjectForm from './SubjectForm';
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList";
 import CalendarMenu from "./CalendarMenu";
@@ -58,18 +59,15 @@ function App() {
     }
   };
 
+  //タスクの追加
   const addTask = async (subjectId, task) => {
     try {
-      if (!subjects[subjectIndex]) {
-        console.error("Invalid subjectIndex:", subjectIndex);
-        return;
-      }
-      console.log("追加するタスク:", { subjectId, ...task });
       const newTask = { ...task, subjectId };
+      console.log("追加するタスク：", newTask); // 追加するタスクをログに出力
       const res = await axios.post("http://localhost:4000/tasks", newTask);
       setTasks((prev) => [...prev, res.data]);
     } catch (err) {
-      console.error("タスクの追加に失敗:", err);
+      console.error("タスクの追加に失敗：", err.response?.data || err);
     }
   };
 
@@ -167,18 +165,18 @@ function App() {
           completeTask={completeTask}
         />
         <h2 className="app-title">Study Manager</h2>
-        
-        {/* タスク一覧 */}
-        <Routes>
-          <Route
-            path="/task-completion"
-            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
-          />
-          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
-        </Routes>
 
-        <CalendarMenu />
-        
+        <TaskList
+          tasks={tasks}
+          updateTask={updateTask}
+          deleteTask={deleteTask}
+          completeTask={completeTask}
+          isMainView={true}
+        />
+
+        {/* カレンダー */}
+        <CalendarMenu subjects={subjects} />
+
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
@@ -191,15 +189,15 @@ function App() {
         {/* もっと見る/隠す ボタン */}
         {subjects.length > 3 && (
           <div className="show-more-button-container">
-            <button 
-              onClick={() => setShowAll(!showAll)} 
+            <button
+              onClick={() => setShowAll(!showAll)}
               className="btn btn-primary">
               {showAll ? "隠す" : "もっと見る"}
             </button>
           </div>
         )}
       </div>
-    </Router>
+    </Router >
   );
 }
 
