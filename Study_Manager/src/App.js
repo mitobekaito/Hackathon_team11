@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import HamburgerMenu from "./HamburgerMenu";
-import SubjectForm from './SubjectForm';
 import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList";
 import CalendarMenu from "./CalendarMenu";
 import LevelDisplay from "./LevelDisplay";
+import { v4 as uuidv4 } from 'uuid';
 import "./App.css";
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
       setSubjects(res.data);
 
       const initialXp = res.data.reduce((acc, subject) => {
-        acc[subject._id] = subject.XP || 0;
+        acc[subject._id] = subject.xp || 0;
         return acc;
       }, {});
       setXP(initialXp);
@@ -52,22 +52,20 @@ function App() {
         name: subject.name,
         date: subject.date || new Date().toISOString().split('T')[0]
       });
-      setSubjects([...subjects, res.data._id]);
+      setSubjects([...subjects, res.data]);
     } catch (err) {
       console.error("科目の追加に失敗：", err.response?.data || err);
     }
   };
 
-  //タスクの追加
   const addTask = async (subjectId, task) => {
     try {
       console.log("追加するタスク:", { subjectId, ...task });
       const newTask = { ...task, subjectId };
-      console.log("追加するタスク：", newTask); // 追加するタスクをログに出力
       const res = await axios.post("http://localhost:4000/tasks", newTask);
       setTasks((prev) => [...prev, res.data]);
     } catch (err) {
-      console.error("タスクの追加に失敗：", err.response?.data || err);
+      console.error("タスクの追加に失敗:", err);
     }
   };
 
@@ -107,21 +105,29 @@ function App() {
         return;
       }
 
-      const xpIncrement = (task.understanding || 0) * task.priority * 4;
+      const xpIncrement = (rating || 0) * task.priority * 4;
+      console.log(`XP計算式: (${rating} || 0) * ${task.priority} * 4 = ${xpIncrement}`);
 
-      const updatedTask = { ...task, completed: true, rating };
+      const updatedTask = { ...task, completed: true, understanding: rating };
       await axios.put(`http://localhost:4000/tasks/${task._id}`, updatedTask);
 
-      const subjectId = task.subjectId;
-      if (subjectId) {
-        await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
+      let subjectId = task.subjectId;
+      if (subjectId && typeof subjectId === 'object') {
+        subjectId = subjectId._id; // オブジェクトの場合は_idフィールドを使用
+      }
+
+      if (subjectId && typeof subjectId === 'string') {
+        const res = await axios.put(`http://localhost:4000/subjects/${subjectId}/increase-xp`, {
           increment: xpIncrement,
         });
 
+        const updatedSubject = res.data;
         setXP((prevXP) => ({
           ...prevXP,
-          [subjectId]: (prevXP[subjectId] || 0) + xpIncrement,
+          [subjectId]: updatedSubject.xp,
         }));
+      } else {
+        console.error("エラー: subjectIdが無効です");
       }
 
       setTasks((prev) => prev.map((t, index) => (index === taskIndex ? updatedTask : t)));
@@ -171,22 +177,22 @@ function App() {
           completeTask={completeTask}
         />
         <h2 className="app-title">Study Manager</h2>
+        
+        {/* タスク一覧 */}
+        <Routes>
+          <Route
+            path="/task-completion"
+            element={<TaskCompletion tasks={tasks} updateTask={updateTask} deleteTask={deleteTask} />}
+          />
+          <Route path="/" element={<TaskList tasks={tasks} completeTask={completeTask} isMainView={true} />} />
+        </Routes>
 
-        <TaskList
-          tasks={tasks}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-          completeTask={completeTask}
-          isMainView={true}
-        />
-
-        {/* カレンダー */}
         <CalendarMenu subjects={subjects} />
-
+        
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
-            <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
+            <div key={uuidv4()} className="min-w-[16rem] flex-shrink-0">
               <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
             </div>
           ))}
@@ -195,15 +201,15 @@ function App() {
         {/* もっと見る/隠す ボタン */}
         {subjects.length > 3 && (
           <div className="show-more-button-container">
-            <button
-              onClick={() => setShowAll(!showAll)}
+            <button 
+              onClick={() => setShowAll(!showAll)} 
               className="btn btn-primary">
               {showAll ? "隠す" : "もっと見る"}
             </button>
           </div>
         )}
       </div>
-    </Router >
+    </Router>
   );
 }
 

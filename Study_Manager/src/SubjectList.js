@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TaskForm from "./TaskForm";
+import { v4 as uuidv4 } from 'uuid';
 
 function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
   const [isEditing, setIsEditing] = useState(null);
@@ -37,7 +38,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
       <h2>登録された教科</h2>
       <ul>
         {subjects.map((subject, index) => (
-          <li key={subject._id}className="subject-item">
+          <li key={uuidv4()}>
             {isEditing === index ? (
               <div>
                 <input
@@ -68,7 +69,7 @@ function SubjectList({ subjects, addTask, editSubject, deleteSubject }) {
               </div>
             )}
             {/* `subject._id` を `TaskForm` に正しく渡す */}
-            <TaskForm key={`taskform-${subject._id}`} addTask={addTask} subjectId={subject._id} />
+            <TaskForm key={uuidv4()} addTask={addTask} subjectId={subject._id} />
           </li>
         ))}
       </ul>
