@@ -6,6 +6,7 @@ import TaskCompletion from "./TaskCompletion";
 import TaskList from "./TaskList";
 import CalendarMenu from "./CalendarMenu";
 import LevelDisplay from "./LevelDisplay";
+import { v4 as uuidv4 } from 'uuid';
 import "./App.css";
 
 function App() {
@@ -183,7 +184,7 @@ function App() {
         {/* レベル表示（横スクロール対応） */}
         <div className="level-display-container flex flex-wrap justify-center gap-4 p-4">
           {(showAll ? subjects : subjects.slice(0, 3)).map((subject) => (
-            <div key={subject._id} className="min-w-[16rem] flex-shrink-0">
+            <div key={uuidv4()} className="min-w-[16rem] flex-shrink-0">
               <LevelDisplay initialXp={xp[subject._id] || 0} subjectName={subject.name} />
             </div>
           ))}
